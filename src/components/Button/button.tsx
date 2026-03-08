@@ -4,8 +4,8 @@ import type {
   AnchorButtonProps,
   ButtonProps,
   NativeButtonProps,
-} from './button.types'
-import { ButtonType } from './button.types'
+} from './button.types.ts'
+import { ButtonType } from './button.types.ts'
 
 const Button: FC<ButtonProps> = ({
   className,

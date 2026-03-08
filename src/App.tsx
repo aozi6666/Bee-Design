@@ -8,7 +8,7 @@ import Button from './components/Button/button'
 import {
   ButtonSize,
   ButtonType,
-} from './components/Button/button.types'
+} from './components/Button/button.types.ts'
 
 const App: FC = () => {
   return (

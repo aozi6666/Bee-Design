@@ -22,6 +22,7 @@ const App: FC = () => {
           }}
         >
           <Button btnType={ButtonType.Primary}>Primary Button</Button>
+          
           <Button btnType={ButtonType.Default}>Default Button</Button>
           <Button btnType={ButtonType.Danger}>Danger Button</Button>
           <Button btnType={ButtonType.Link} href="#">

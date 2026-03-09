@@ -29,6 +29,11 @@ const Button: FC<ButtonProps> = ({
     disabled: btnType === ButtonType.Link && disabled,
   })
 
+  // ② 根据类型决定渲染：
+  /* 
+  用户写：<Button btnType="link" href="https://xxx">
+  组件算出: <a class="btn btn-link">...</a>
+  */
   if (btnType === ButtonType.Link && href) {
     return (
       <a
@@ -40,7 +45,10 @@ const Button: FC<ButtonProps> = ({
       </a>
     )
   }
-
+  /* 
+  用户写：<Button btnType="primary">
+  组件算出: <button class="btn btn-primary">
+  */
   return (
     <button
       className={classes}

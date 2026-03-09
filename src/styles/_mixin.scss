@@ -1,9 +1,14 @@
+/* @mixin： “一段可复用的样式模板”
+ 重复样式规则先封装起来，后面哪里要用，就 @include 一下（传入对应的props就行）
+*/
 @mixin button-size($padding-y, $padding-x, $font-size, $border-raduis) {
   padding: $padding-y $padding-x;
   font-size: $font-size;
   border-radius: $border-raduis;
 }
 
+// 按钮状态逻辑
+// 需要 6 个参数, 后 3 个是 可选参数（有默认值）
 @mixin button-style(
   $background,
   $border,
@@ -12,20 +17,24 @@
   $hover-border: lighten($border, 10%),
   $hover-color: $color,
 ) {
+  // normal状态
   color: $color;
   background: $background;
   border-color: $border;
+  // hover 状态
   &:hover {
     color: $hover-color;
     background: $hover-background;
     border-color: $hover-border;    
   }
+  // focus 状态
   &:focus,
   &.focus {
     color: $hover-color;
     background: $hover-background;
     border-color: $hover-border;    
   }
+  // disabled 状态
   &:disabled,
   &.disabled {
     color: $color;

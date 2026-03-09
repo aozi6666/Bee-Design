@@ -1,3 +1,5 @@
+/* Button 真正的样式 */
+// 基础按钮 .btn 结构
 .btn {
     position: relative;
     display: inline-block;
@@ -27,6 +29,7 @@
     }
 }
 
+// ② 按钮尺寸
 .btn-lg {
     @include button-size($btn-padding-y-lg, $btn-padding-x-lg, $btn-font-size-lg, $btn-border-radius-lg);
 }
@@ -34,6 +37,7 @@
     @include button-size($btn-padding-y-sm, $btn-padding-x-sm, $btn-font-size-sm, $btn-border-radius-sm);
 }
 
+// ③ 按钮类型
 .btn-primary {
     @include button-style($primary, $primary, $white)
 }
@@ -45,10 +49,12 @@
     @include button-style($white, $gray-400, $body-color, $white, $primary, $primary)
 }
 
+// ④ link 按钮
 .btn-link {
     font-weight: $font-weight-normal;
     color: $btn-link-color;
     text-decoration: $link-decoration;
+    // 去背景
     box-shadow: none;
     &:hover {
         color: $btn-link-hover-color;

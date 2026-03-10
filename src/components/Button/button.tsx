@@ -15,12 +15,13 @@ React 函数组件调用:
 import type { FC } from 'react'
 // 第三方工具库： 自动智能拼接 class 字符串
 import classNames from 'classnames'
-import type {
-  AnchorButtonProps,
-  ButtonProps,
-  NativeButtonProps,
-} from './button.types.ts'
-import { ButtonType } from './button.types.ts'
+import {
+  ButtonSize,
+  ButtonType,
+  type AnchorButtonProps,
+  type ButtonProps,
+  type NativeButtonProps,
+} from './button.types'
 
 const Button: FC<ButtonProps> = ({
   className,
@@ -88,3 +89,7 @@ const Button: FC<ButtonProps> = ({
 
 // 导出一个 React 组件函数
 export default Button
+
+// 重新导出类型和枚举，方便测试等地方从 `./button` 统一导入
+export { ButtonSize, ButtonType }
+export type { ButtonProps, AnchorButtonProps, NativeButtonProps }

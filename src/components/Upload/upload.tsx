@@ -184,3 +184,5 @@ export const Upload: FC<UploadProps> = (props) => {
 }
 
 export default Upload;
+
+export type { UploadProps };

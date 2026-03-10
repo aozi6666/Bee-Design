@@ -34,6 +34,7 @@ export const Upload: FC<UploadProps> = (props) => {
   } = props
   const fileInput = useRef<HTMLInputElement>(null)
   const [fileList, setFileList] = useState<UploadFile[]>(defaultFileList || [])
+  //  **`UploadList`** 子组件: 渲染一堆列表项 class
   const updateFileList = (updateFile: UploadFile, updateObj: Partial<UploadFile>) => {
     setFileList(prevList => {
       return prevList.map(file => {
@@ -45,6 +46,7 @@ export const Upload: FC<UploadProps> = (props) => {
       })
     })
   }
+
   const handleClick = () => {
     if (fileInput.current) {
       fileInput.current.click()
@@ -88,6 +90,8 @@ export const Upload: FC<UploadProps> = (props) => {
       }
     })
   }
+
+  // 上传文件
   const post = (file: File) => {
     let _file: UploadFile = {
       uid: Date.now() + 'upload-file',

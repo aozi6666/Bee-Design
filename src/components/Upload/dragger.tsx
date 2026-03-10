@@ -9,7 +9,10 @@ interface DraggerProps {
 export const Dragger: FC<DraggerProps> = (props) => {
   const { onFile, children } = props
   const [ dragOver, setDragOver ] = useState(false)
+
+  // 使用 `classNames` 拼 `className`：
   const klass = classNames('viking-uploader-dragger', {
+    // 如果 `dragOver === true` 时，再加一个：`is-dragover`
     'is-dragover': dragOver
   })
   const handleDrop = (e: DragEvent<HTMLElement>) => {

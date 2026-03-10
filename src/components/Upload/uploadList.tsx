@@ -1,5 +1,5 @@
-import React, { FC } from 'react'
-import { UploadFile } from './upload'
+import type { FC } from 'react'
+import type { UploadFile } from './upload.types'
 import Icon from '../Icon/icon'
 import Progress from '../Progress/progress'
 interface UploadListProps {

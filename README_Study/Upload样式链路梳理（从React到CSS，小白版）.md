@@ -202,6 +202,123 @@ return (
   - 被内联样式 `display: 'none'` 隐藏掉，只负责**弹系统文件选择框**。
 - **`UploadList`** 子组件里会再渲染一堆列表项 class（见下一节）。
 
+### 3.3 关键链路（小白版）：选择文件后，代码是怎么一路“走到 axios.post”的？
+
+这一条链路，完全对应你在 `upload.tsx` 里看到的几段代码：
+
+#### 第一步：用户“点一下”触发区域（按钮/拖拽框）
+
+- 触发的是 `div.viking-upload-input` 的 `onClick={handleClick}`
+- `handleClick` 做的事很简单：用 ref 拿到隐藏的 input，然后调用浏览器的原生能力弹出文件选择框：
+
+```tsx
+const fileInput = useRef<HTMLInputElement>(null)
+const handleClick = () => {
+  if (fileInput.current) {
+    fileInput.current.click()
+  }
+}
+```
+
+#### 第二步：用户在系统文件选择框里选了文件
+
+这时会触发隐藏 input 的 `onChange={handleFileChange}`：
+
+```tsx
+<input
+  className="viking-file-input"
+  style={{ display: 'none' }}
+  ref={fileInput}
+  onChange={handleFileChange}
+  type="file"
+  accept={accept}
+  multiple={multiple}
+/>
+```
+
+你可以把这段 input 理解为：
+
+- **`display: none`**：它不负责“长得好看”，只负责“让浏览器给你 File / FileList”
+- **`accept`**：限制可选文件类型（比如 `image/*`）
+- **`multiple`**：允许一次选择多个文件
+
+#### 第三步：`handleFileChange` 拿到文件列表，交给 `uploadFiles`
+
+```tsx
+const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const files = e.target.files
+  if (!files) return
+  uploadFiles(files)
+  if (fileInput.current) {
+    fileInput.current.value = ''
+  }
+}
+```
+
+几个小白容易忽略、但很关键的点：
+
+- **`e.target.files`** 才是真正的文件列表（类型是 `FileList`）
+- **清空 `fileInput.current.value`**：这样你连续选择“同一个文件”时，也能再次触发 `onChange`
+
+#### 第四步：`uploadFiles` 决定“每个文件要不要上传 / 要不要先处理一下再上传”
+
+`FileList` 不是数组，所以先 `Array.from(files)` 变成数组，然后对每个文件走分支：
+
+```tsx
+const uploadFiles = (files: FileList) => {
+  const postFiles = Array.from(files)
+  postFiles.forEach(file => {
+    if (!beforeUpload) {
+      post(file)
+    } else {
+      const result = beforeUpload(file)
+      if (result && result instanceof Promise) {
+        result.then(processedFile => post(processedFile))
+      } else if (result !== false) {
+        post(file)
+      }
+    }
+  })
+}
+```
+
+理解这个分支就够了：
+
+- **没传 `beforeUpload`**：直接 `post(file)` 上传
+- **`beforeUpload(file)` 返回 Promise**：说明你要异步处理（例如压缩图片），处理完再 `post(processedFile)`
+- **`beforeUpload(file)` 返回 `false`**：这次文件就“拦截掉”，不上传
+
+#### 第五步：`post(file)` 真正发请求（axios + FormData）
+
+`post` 分两件事：先把 UI 里要展示的文件状态塞进 `fileList`，再发请求并不断更新状态。
+
+1) 先创建一个内部文件对象 `_file`（这会影响列表渲染、样式 class）：
+
+- `status: 'ready'`：刚准备上传
+- `percent: 0`：进度条从 0 开始
+
+2) 用 `FormData` 组装 `multipart/form-data`：
+
+- `formData.append(name || 'file', file)`：把文件本体放进去
+- 如果你传了 `data`：就会把额外字段也 append 进去（例如 `userId`、`token`）
+
+3) `axios.post(action, formData, {...})`：
+
+- **`onUploadProgress`**：浏览器会不断回调上传进度，你这里把：
+  - `percent` 更新
+  - `status` 改成 `'uploading'`
+  - 触发 `onProgress(percentage, _file)`
+- **成功**：
+  - 把 `status` 改成 `'success'`
+  - 写入 `response`
+  - 触发 `onSuccess`、`onChange`
+- **失败**：
+  - 把 `status` 改成 `'error'`
+  - 写入 `error`
+  - 触发 `onError`、`onChange`
+
+最终效果就是：**网络层面的进度/成功/失败 → 更新 `fileList` → `UploadList` 重新渲染 → className 变化 → SCSS 规则生效**。
+
 > 注意：`viking-upload-component` 和 `viking-upload-input` 在当前 `_style.scss` 里**没有专门的样式规则**，它们更多是语义性包裹。真正明显的视觉样式集中在：
 > - 拖拽区域：`viking-uploader-dragger`
 > - 上传列表：`viking-upload-list`、`viking-upload-list-item` 等。

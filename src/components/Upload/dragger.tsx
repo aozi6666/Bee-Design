@@ -16,6 +16,7 @@ export const Dragger: FC<DraggerProps> = (props) => {
     // 如果 `dragOver === true` 时，再加一个：`is-dragover`
     'is-dragover': dragOver
   })
+  // 上传流程
   const handleDrop = (e: DragEvent<HTMLElement>) => {
     e.preventDefault()
     setDragOver(false)

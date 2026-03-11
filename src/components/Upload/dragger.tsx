@@ -1,3 +1,7 @@
+/* Dragger 是专门处理拖拽上传逻辑的子组件：
+  - 只负责获取拖拽的文件
+  - 上传文件还是靠 Upload 
+*/
 import { useState } from 'react'
 import type { DragEvent, FC, ReactNode } from 'react'
 import classNames from 'classnames'

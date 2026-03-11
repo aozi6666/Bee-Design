@@ -219,6 +219,46 @@ const App: FC = () => {
             </div>
           </section>
         </main>
+
+        {/* 传统表单方式的文件上传示例 */}
+        <div
+          style={{
+            marginTop: 40,
+            padding: 24,
+            borderRadius: 12,
+            background: '#ffffff',
+            boxShadow: '0 8px 24px rgba(15, 23, 42, 0.06)',
+          }}
+        >
+          <h2 style={{ margin: 0, marginBottom: 16, fontSize: 18 }}>原生表单上传示例</h2>
+          <p style={{ margin: '0 0 16px', color: '#8c8c8c', fontSize: 13 }}>
+            使用原生 <code>&lt;form&gt;</code> 提交到后端接口的文件上传方式。
+          </p>
+          {/* 文件类型设置：encType="multipart/form-data" */}
+          <form
+            method="post"
+            encType="multipart/form-data"
+            action="https://jsonplaceholder.typicode.com/posts"
+            style={{ marginTop: 8 }}
+          >
+            {/* type="file" 属性 */}
+            <input type="file" name="myFile" />
+            <button
+              type="submit"
+              style={{
+                marginLeft: 12,
+                padding: '4px 12px',
+                borderRadius: 4,
+                border: '1px solid #1677ff',
+                background: '#1677ff',
+                color: '#fff',
+                cursor: 'pointer',
+              }}
+            >
+              Submit
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   )

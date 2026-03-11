@@ -158,9 +158,10 @@ export const Upload: FC<UploadProps> = (props) => {
       // 跨域请求 凭证信息（Cookie）
       // 需要 后端 允许跨域携带凭证： Access-Control-Allow-Credentials: true
       withCredentials,
-      // axios 请求配置回调
-      // 上传过程中不断触发 onUploadProgress回调： 上传进度 函数
+      // axios 提供的 请求配置回调（“系统回调”）
+      // （不需要手动调用）上传过程中，axios 内部自动不断触发 onUploadProgress
       onUploadProgress: (e) => {
+        // 把字节进度算成百分比
         const total = e.total ?? 0
         const percentage = total ? Math.round((e.loaded * 100) / total) : 0
         // 更新 fileList 中这条文件的 percent/status
@@ -170,7 +171,8 @@ export const Upload: FC<UploadProps> = (props) => {
           // 更新当前 _file 对象，保证传给回调的值是新的
           _file.status = 'uploading'
           _file.percent = percentage
-          // onProgress： 上传进度钩子
+          // 将 axios 的 onUploadProgress 得到的上传进度结果，包装一层
+          // 提供给 Upload 组件的外部使用者 外部钩子onProgress：给组件外部使用
           if (onProgress) {
             onProgress(percentage, _file)
           }

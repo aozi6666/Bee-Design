@@ -1,10 +1,11 @@
 import type { ReactElement } from 'react'
 import type { InputProps } from '../Input/input.types'
 
+// 每一条item 建议项 至少有 `value: string`
 interface DataSourceObject {
   value: string
 }
-
+// 别的数据“拼”在 item 上
 export type DataSourceType<T = {}> = T & DataSourceObject
 
 export interface AutoCompleteProps extends Omit<InputProps, 'onSelect' | 'onChange'> {
@@ -13,11 +14,11 @@ export interface AutoCompleteProps extends Omit<InputProps, 'onSelect' | 'onChan
    * type DataSourceType<T = {}> = T & DataSourceObject
    */
   fetchSuggestions: (str: string) => DataSourceType[] | Promise<DataSourceType[]>
-  /** 点击选中建议项时触发的回调 */
+  /** 点击 选中建议项(点中/回车) 时触发的回调 */
   onSelect?: (item: DataSourceType) => void
-  /** 文本框发生改变的时候触发的事件 */
+  /** 文本框发生改变 的时候触发的事件 */
   onChange?: (value: string) => void
-  /** 支持自定义渲染下拉项，返回 ReactElement */
+  /** 支持自定义 渲染 下拉项 的 UI，返回 ReactElement */
   renderOption?: (item: DataSourceType) => ReactElement
 }
 

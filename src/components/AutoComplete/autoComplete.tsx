@@ -1,12 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import type { ChangeEvent, KeyboardEvent } from 'react'
-import classNames from 'classnames'
 import Input from '../Input/input'
-import Icon from '../Icon/icon'
-import Transition from '../Transition/transition'
 import useDebounce from '../../hooks/useDebounce'
 import useClickOutside from '../../hooks/useClickOutside'
 import type { AutoCompleteProps, DataSourceType } from './autoComplete.types'
+import AutoCompleteDropdown from './autoCompleteDropdown'
 export type { AutoCompleteProps, DataSourceType } from './autoComplete.types'
 
 /**
@@ -27,19 +25,37 @@ export const AutoComplete = (props: AutoCompleteProps) => {
     renderOption,
     ...restProps
   } = props
-
+  // 输入框当前显示的文本
   const [ inputValue, setInputValue ] = useState((value as string) || '')
+  // 下拉建议列表的数据源（渲染 `<li>` 就靠它）
   const [ suggestions, setSugestions ] = useState<DataSourceType[]>([])
+  // 异步请求进行中就显示 loading
   const [ loading, setLoading ] = useState(false)
+  // 是否展示下拉（配合 `Transition` 动画）
   const [ showDropdown, setShowDropdown] = useState(false)
+  // 键盘上下选择时，哪一项高亮（对应 class `is-active`）
   const [ highlightIndex, setHighlightIndex] = useState(-1)
+
+  // 两个关键 ref：
+  // 用来区分“用户打字触发搜索” vs “用户选中后把值塞回去（不应该再搜一次）”
   const triggerSearch = useRef(false)
+  // 挂到最外层 div 上，给 `useClickOutside` 判断“点击是否发生在组件外”
   const componentRef = useRef<HTMLDivElement>(null)
+    
+  // 防抖Hook：把“频繁输入”变成“停顿后再触发一次”
   const debouncedValue = useDebounce(inputValue, 300)
+
+  // 自定义Hook：点击组件外部时关闭下拉
+  /* 在 `document` 上挂一个 `click` 监听
+   * @param componentRef 组件的 ref
+   * @param callback 点击外部时执行的回调
+   */
   useClickOutside(componentRef, () => {
     setSugestions([])
     setShowDropdown(false)
   })
+
+  // 监听 `debouncedValue` 变化
   useEffect(() => {
     if (debouncedValue && triggerSearch.current) {
       setSugestions([])
@@ -87,14 +103,22 @@ export const AutoComplete = (props: AutoCompleteProps) => {
         break
     }
   }
+  // 回调：消息框内容发生变化
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    // 获取 输入框内容 （去掉首尾空格）
     const value = e.target.value.trim()
+    // 更新 输入框内容
+    // `inputValue` 变化 → 经过 `useDebounce` 得到 `debouncedValue`
     setInputValue(value)
+    // 组件使用者传来的回调：消息框内容发生变化
     if (onChange) {
       onChange(value)
     }
+    // 告诉后面“这次是用户输入，应当触发搜索”
     triggerSearch.current = true
   }
+
+  // 回调：用户选中某一项
   const handleSelect = (item: DataSourceType) => {
     setInputValue(item.value)
     setShowDropdown(false)
@@ -102,37 +126,6 @@ export const AutoComplete = (props: AutoCompleteProps) => {
       onSelect(item)
     }
     triggerSearch.current = false
-  }
-  const renderTemplate = (item: DataSourceType) => {
-    return renderOption ? renderOption(item) : item.value
-  }
-  const generateDropdown = () => {
-    return (
-      <Transition
-        in={showDropdown || loading}
-        animation="zoom-in-top"
-        timeout={300}
-        onExited={() => {setSugestions([])}}
-      >
-        <ul className="viking-suggestion-list">
-          { loading &&
-            <div className="suggstions-loading-icon">
-              <Icon icon="spinner" spin/>
-            </div>
-          }
-          {suggestions.map((item, index) => {
-            const cnames = classNames('suggestion-item', {
-              'is-active': index === highlightIndex
-            })
-            return (
-              <li key={index} className={cnames} onClick={() => handleSelect(item)}>
-                {renderTemplate(item)}
-              </li>
-            )
-          })}
-        </ul>
-      </Transition>
-    )
   }
   return (
     <div className="viking-auto-complete" ref={componentRef}>
@@ -142,7 +135,17 @@ export const AutoComplete = (props: AutoCompleteProps) => {
         onChange={handleChange}
         onKeyDown={handleKeyDown}
       />
-      {generateDropdown()}
+      <AutoCompleteDropdown
+        loading={loading}
+        showDropdown={showDropdown}
+        suggestions={suggestions}
+        highlightIndex={highlightIndex}
+        onSelect={handleSelect}
+        renderOption={renderOption}
+        onExited={() => {
+          setSugestions([])
+        }}
+      />
     </div>
   )
 }

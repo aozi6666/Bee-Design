@@ -38,7 +38,7 @@ export const AutoCompleteDropdown: FC<AutoCompleteDropdownProps> = (props) => {
     >
       <ul className="viking-suggestion-list">
         {loading && (
-          <div className="suggstions-loading-icon">
+          <div className="suggestions-loading-icon">
             <Icon icon="spinner" spin />
           </div>
         )}

@@ -203,7 +203,7 @@ useEffect(() => {
 <Transition in={showDropdown || loading} animation="zoom-in-top" timeout={300}>
   <ul className="viking-suggestion-list">
     {loading && (
-      <div className="suggstions-loading-icon">
+      <div className="suggestions-loading-icon">
         <Icon icon="spinner" spin />
       </div>
     )}
@@ -224,7 +224,7 @@ useEffect(() => {
 你需要记住的 class 就这几个：
 
 - **`viking-suggestion-list`**：整个下拉列表 `<ul>`
-- **`suggstions-loading-icon`**：loading 容器（注意：这里单词拼写是 `suggstions`，少了一个 `e`，样式文件也是同样拼写）
+- **`suggestions-loading-icon`**：loading 容器
 - **`suggestion-item`**：每一行 `<li>`
 - **`is-active`**：当前高亮行（键盘上下切换时会加上）
 
@@ -294,7 +294,7 @@ AutoComplete 最外层：
 - **`.viking-suggestion-list`**：绝对定位 + 白底 + 边框 + 阴影 + 宽度 100%
 - **`.suggestion-item`**：padding / hover / active
 - **`.suggestion-item.is-active`**：高亮背景、文字变白（键盘上下时最明显）
-- **`.suggstions-loading-icon`**：让 loading 居中并给一个最小高度
+- **`.suggestions-loading-icon`**：让 loading 居中并给一个最小高度
 
 ### 7.3 这份 SCSS 是怎么“进到页面里”的？
 

@@ -135,6 +135,8 @@ export const AutoComplete = (props: AutoCompleteProps) => {
         onChange={handleChange}
         onKeyDown={handleKeyDown}
       />
+
+      {/* 下拉列表UI组件 */}
       <AutoCompleteDropdown
         loading={loading}
         showDropdown={showDropdown}

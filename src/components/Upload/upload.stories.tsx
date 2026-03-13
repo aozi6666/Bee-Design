@@ -22,7 +22,8 @@ const meta = {
 
 export default meta
 
-// 推荐写法：用 Template 复用渲染逻辑，再用 bind({}) 生成具体 story
+// 用 Template 复用渲染逻辑，再用 bind({}) 生成具体 story
+// args : 组件默认 props
 const Template: StoryFn<typeof Upload> = (args) => <Upload {...args} />
 
 // 1. 普通上传

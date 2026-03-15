@@ -1,6 +1,7 @@
-import React, { FC, useState, createContext, CSSProperties, ReactNode } from 'react'
+import React, { useState, createContext } from 'react'
+import type { FC, CSSProperties, ReactNode } from 'react'
 import classNames from 'classnames'
-import { MenuItemProps } from './menuItem'
+import type { MenuItemProps } from './menuItem'
 
 type MenuMode = 'horizontal' | 'vertical'
 export interface MenuProps {
@@ -33,8 +34,15 @@ export const MenuContext = createContext<IMenuContext>({index: '0'})
  * //然后可以使用 Menu.Item 和 Menu.Submenu 访问选项和子下拉菜单组件
  * ```
  */
-export const Menu: FC<MenuProps> = (props) => {
-  const { className, mode, style, children, defaultIndex, onSelect, defaultOpenSubMenus } = props
+export const Menu: FC<MenuProps> = ({
+  className,
+  mode = 'horizontal',
+  style,
+  children,
+  defaultIndex = '0',
+  onSelect,
+  defaultOpenSubMenus = [],
+}) => {
   const [ currentActive, setActive ] = useState(defaultIndex)
   const classes = classNames('viking-menu', className, {
     'menu-vertical': mode === 'vertical',
@@ -72,11 +80,6 @@ export const Menu: FC<MenuProps> = (props) => {
       </MenuContext.Provider>
     </ul>
   )
-}
-Menu.defaultProps = {
-  defaultIndex: '0',
-  mode: 'horizontal',
-  defaultOpenSubMenus: [],
 }
 
 export default Menu;

@@ -3,7 +3,7 @@ import type { FC } from 'react'
 import './styles/index.scss'
 
 import Button from './components/Button/button'
-import { ButtonType } from './components/Button/button.types.ts'
+import { ButtonType } from './components/Button/button.types'
 import Upload from './components/Upload'
 import type { UploadFile } from './components/Upload/upload.types'
 import Icon from './components/Icon'

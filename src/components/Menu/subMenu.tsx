@@ -1,7 +1,8 @@
-import React,{ FC, useContext, useState, FunctionComponentElement, ReactNode } from 'react'
+import React,{ useContext, useState } from 'react'
+import type { FC, FunctionComponentElement, ReactNode } from 'react'
 import classNames from 'classnames'
 import { MenuContext } from './menu'
-import { MenuItemProps } from './menuItem'
+import type { MenuItemProps } from './menuItem'
 import Icon from '../Icon/icon'
 import Transition from '../Transition/transition'
 export interface SubMenuProps {

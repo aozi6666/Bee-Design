@@ -4,10 +4,9 @@
     "outDir": "build",
     "declaration": true,
     "noEmit": false,
-    "emitDeclarationOnly": true,
     "jsx": "react-jsx",
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "allowImportingTsExtensions": false,
     "types": ["react", "react-dom", "jest", "@testing-library/jest-dom", "mdx"]
   },
   "include": ["src"],

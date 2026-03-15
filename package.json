@@ -5,8 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "build-ts":"tsc -p tsconfig.build.json",  
+    // "build": "tsc -b && vite build",
+    "build": "npm run build-ts && npm run build-css",
+    "build:site": "vite build",
+    "build-ts": "tsc -p tsconfig.build.json",
+    "build-css": "node-sass ./src/styles/index.scss ./build/index.css",
     "webpack:dev": "webpack",
     "webpack:build": "NODE_ENV=production webpack",
     "lint": "eslint .",

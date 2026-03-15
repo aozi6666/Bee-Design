@@ -25,7 +25,8 @@
     "test:ci": "CI=true jest",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "prepublishOnly": "npm run test:ci && npm run lint && npm run build"
+    "prepublishOnly": "npm run test:ci && npm run lint && npm run build",
+    "prepare": "husky"
   },
   "peerDependencies": {
     "react": "^18 || ^19",

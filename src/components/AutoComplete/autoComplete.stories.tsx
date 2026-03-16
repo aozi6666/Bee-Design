@@ -45,7 +45,7 @@ ASimpleComplete.args = {
 }
 ASimpleComplete.storyName = '1 基本的搜索'
 
-const lakersWithNumber = [
+const lakersWithNumber: LakerPlayerProps[] = [
   { value: 'bradley', number: 11 },
   { value: 'pope', number: 1 },
   { value: 'caruso', number: 4 },
@@ -57,11 +57,13 @@ const lakersWithNumber = [
   { value: 'howard', number: 39 },
   { value: 'kuzma', number: 0 },
 ]
-const handleFetchCustom = (query: string) => {
-  return lakersWithNumber.filter(player => player.value.includes(query))
+const handleFetchCustom = (query: string): DataSourceType<LakerPlayerProps>[] => {
+  return lakersWithNumber
+    .filter(player => player.value.includes(query))
+    .map(player => ({...player }))
 }
-const renderOptionCustom = (item: DataSourceType) => {
-  const itemWithNumber = item as DataSourceType<LakerPlayerProps>
+const renderOptionCustom = (item: DataSourceType<LakerPlayerProps>) => {
+  const itemWithNumber = item
   return (
     <>
       <b>名字: {itemWithNumber.value}</b>
@@ -78,15 +80,17 @@ BCustomComplete.args = {
 }
 BCustomComplete.storyName = '2 自定义搜索结果模版'
 
-const handleFetchAjax = (query: string) => {
+const handleFetchAjax = (
+  query: string
+): Promise<DataSourceType<GithubUserProps>[]> => {
   return fetch(`https://api.github.com/search/users?q=${query}`)
     .then(res => res.json())
-    .then((data: { items: GithubUserProps[] }) => {
-      return data.items.slice(0, 10).map((item) => ({ value: item.login, ...item }))
-    })
+    .then((data: { items: GithubUserProps[] }) =>
+      data.items.slice(0, 10).map((item) => ({ value: item.login, ...item }))
+    )
 }
-const renderOptionAjax = (item: DataSourceType) => {
-  const itemWithGithub = item as DataSourceType<GithubUserProps>
+const renderOptionAjax = (item: DataSourceType<GithubUserProps>) => {
+  const itemWithGithub = item
   return (
     <>
       <b>Name: {itemWithGithub.value}</b>

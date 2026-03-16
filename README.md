@@ -18,18 +18,18 @@ yarn add @aozi6666/bee-design
 ### Quick Start
 
 ```tsx
-import React from 'react'
-import { createRoot } from 'react-dom/client'
-import BeeButton from '@aozi6666/bee-design/build/components/Button'
-import '@aozi6666/bee-design/build/index.css'
+import React from "react";
+import { createRoot } from "react-dom/client";
+import BeeButton from "@aozi6666/bee-design/build/components/Button";
+import "@aozi6666/bee-design/build/index.css";
 
 const App = () => (
   <div style={{ padding: 24 }}>
     <BeeButton>Bee Design Button</BeeButton>
   </div>
-)
+);
 
-createRoot(document.getElementById('root')!).render(<App />)
+createRoot(document.getElementById("root")!).render(<App />);
 ```
 
 > **提示**：发布到 npm 后，推荐在业务项目中通过别名导入，如 `import { Button } from '@aozi6666/bee-design'`。当前版本的打包入口为 `build/index.js`，已经在 `package.json` 中配置好。
@@ -83,33 +83,36 @@ Bee Design 当前提供以下组件（持续扩展中）：
 以 `AutoComplete` 为例：
 
 ```tsx
-import React from 'react'
-import AutoComplete, { type DataSourceType } from '@aozi6666/bee-design/build/components/AutoComplete'
-import '@aozi6666/bee-design/build/index.css'
+import React, { useCallback } from "react";
+import AutoComplete, {
+  type DataSourceType,
+} from "@aozi6666/bee-design/build/components/AutoComplete";
+import "@aozi6666/bee-design/build/index.css";
 
 interface LakerPlayer {
-  value: string
-  number: number
+  value: string;
+  number: number;
 }
 
 const players: Array<DataSourceType<LakerPlayer>> = [
-  { value: 'bradley', number: 11 },
-  { value: 'james', number: 23 },
+  { value: "bradley", number: 11 },
+  { value: "james", number: 23 },
   // ...
-]
+];
 
 const Demo = () => {
-  const fetchSuggestions = (query: string) =>
-    players.filter((p) => p.value.toLowerCase().includes(query.toLowerCase()))
+  const fetchSuggestions = useCallback(
+    (query: string) => players.filter((p) => p.value.toLowerCase().includes(query.toLowerCase())),
+    [],
+  );
 
   return (
-    <AutoComplete
-      fetchSuggestions={fetchSuggestions}
-      placeholder="输入湖人队球员英文名试试"
-    />
-  )
-}
+    <AutoComplete fetchSuggestions={fetchSuggestions} placeholder="输入湖人队球员英文名试试" />
+  );
+};
 ```
+
+> **建议**：`fetchSuggestions` 推荐使用 `useCallback` 包裹，避免在父组件重复渲染时创建新函数，从而触发不必要的副作用或额外请求。
 
 更多示例请参考仓库中的 `src/App.tsx` 和 Storybook 故事文件。
 
@@ -177,4 +180,3 @@ npm run prepublishOnly
 - [ ] 打包为更符合行业习惯的 API 形式（`import { Button } from '@aozi6666/bee-design'`）
 
 欢迎在 GitHub 上提 issue 或 PR，一起完善 Bee Design 🐝。
-

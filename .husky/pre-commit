@@ -1,2 +1,4 @@
 #!/usr/bin/env sh
-npm run test:ci && npm run lint
+. "$(dirname "$0")/_/husky.sh"
+
+npm run lint:staged

@@ -22,19 +22,38 @@
     "dev": "vite",
     "clean": "rimraf ./build",
     "lint": "eslint --ext js,ts,tsx src --max-warnings 5",
+    "lint:fix": "npm run lint -- --fix",
+    "stylelint": "stylelint \"src/**/*.{css,scss}\"",
+    "stylelint:fix": "npm run stylelint -- --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint:staged": "lint-staged",
     "build": "npm run clean && npm run build-ts && npm run build-css",
-    "build:site": "vite build",
     "build-ts": "tsc -p tsconfig.build.json",
     "build-css": "sass ./src/styles/index.scss ./build/index.css",
     "webpack:dev": "webpack",
     "webpack:build": "NODE_ENV=production webpack",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "build:site": "vite build",
     "preview": "vite preview",
     "test": "jest",
     "test:ci": "cross-env CI=true jest",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
     "prepublishOnly": "npm run test:ci && npm run lint && npm run build",
     "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,scss}": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,mdx,yml,yaml}": [
+      "prettier --write"
+    ]
   },
   "peerDependencies": {
     "react": "^18 || ^19",
@@ -89,7 +108,14 @@
     "sass-embedded": "^1.97.3",
     "storybook": "^10.2.17",
     "style-loader": "^4.0.0",
+    "stylelint": "^17.4.0",
+    "stylelint-config-standard": "^40.0.0",
+    "stylelint-config-standard-scss": "^16.0.0",
+    "stylelint-scss": "^7.0.0",
     "terser-webpack-plugin": "^5.4.0",
+    "postcss-scss": "^4.0.9",
+    "prettier": "3.8.1",
+    "lint-staged": "^16.4.0",
     "ts-jest": "^29.4.6",
     "ts-loader": "^9.5.4",
     "typescript": "~5.9.3",

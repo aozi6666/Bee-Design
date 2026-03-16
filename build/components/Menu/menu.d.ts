@@ -1,4 +1,3 @@
-import React from 'react';
 import type { FC, CSSProperties, ReactNode } from 'react';
 type MenuMode = 'horizontal' | 'vertical';
 export interface MenuProps {
@@ -14,13 +13,6 @@ export interface MenuProps {
     defaultOpenSubMenus?: string[];
     children?: ReactNode;
 }
-interface IMenuContext {
-    index: string;
-    onSelect?: (selectedIndex: string) => void;
-    mode?: MenuMode;
-    defaultOpenSubMenus?: string[];
-}
-export declare const MenuContext: React.Context<IMenuContext>;
 /**
  * 为网站提供导航功能的菜单。支持横向纵向两种模式，支持下拉菜单。
  *

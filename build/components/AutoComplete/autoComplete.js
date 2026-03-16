@@ -44,26 +44,36 @@ export const AutoComplete = (props) => {
     });
     // 监听 `debouncedValue` 变化
     useEffect(() => {
-        if (debouncedValue && triggerSearch.current) {
-            setSugestions([]);
-            const results = fetchSuggestions(debouncedValue);
-            if (results instanceof Promise) {
+        const schedule = (fn) => {
+            queueMicrotask(fn);
+        };
+        if (!debouncedValue || !triggerSearch.current) {
+            schedule(() => {
+                setShowDropdown(false);
+                setHighlightIndex(-1);
+            });
+            return;
+        }
+        const results = fetchSuggestions(debouncedValue);
+        if (results instanceof Promise) {
+            schedule(() => {
                 setLoading(true);
-                results.then(data => {
-                    setLoading(false);
-                    setSugestions(data);
-                    setShowDropdown(data.length > 0);
-                });
-            }
-            else {
-                setSugestions(results);
-                setShowDropdown(results.length > 0);
-            }
+                setHighlightIndex(-1);
+            });
+            results.then(data => {
+                setLoading(false);
+                setSugestions(data);
+                setShowDropdown(data.length > 0);
+            });
         }
         else {
-            setShowDropdown(false);
+            schedule(() => {
+                setLoading(false);
+                setSugestions(results);
+                setShowDropdown(results.length > 0);
+                setHighlightIndex(-1);
+            });
         }
-        setHighlightIndex(-1);
     }, [debouncedValue, fetchSuggestions]);
     const highlight = (index) => {
         if (index < 0)

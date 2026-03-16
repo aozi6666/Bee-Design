@@ -1,7 +1,7 @@
 import { jsx as _jsx } from "react/jsx-runtime";
-import React, { useState, createContext } from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
-export const MenuContext = createContext({ index: '0' });
+import { MenuContext } from './menuContext';
 /**
  * 为网站提供导航功能的菜单。支持横向纵向两种模式，支持下拉菜单。
  *

@@ -1,7 +1,7 @@
 import { jsx as _jsx } from "react/jsx-runtime";
 import React, { useContext } from 'react';
 import classNames from 'classnames';
-import { MenuContext } from './menu';
+import { MenuContext } from './menuContext';
 export const MenuItem = (props) => {
     const { index, disabled, className, style, children } = props;
     const context = useContext(MenuContext);

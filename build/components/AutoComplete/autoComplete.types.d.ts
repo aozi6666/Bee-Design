@@ -3,7 +3,7 @@ import type { InputProps } from '../Input/input.types';
 interface DataSourceObject {
     value: string;
 }
-export type DataSourceType<T = {}> = T & DataSourceObject;
+export type DataSourceType<T = Record<string, unknown>> = T & DataSourceObject;
 export interface AutoCompleteProps extends Omit<InputProps, 'onSelect' | 'onChange'> {
     /**
      * 返回输入建议的方法，可以拿到当前的输入，然后返回同步的数组或者是异步的 Promise

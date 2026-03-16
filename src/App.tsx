@@ -30,6 +30,7 @@ const App: FC = () => {
   ]
 
   interface LakerPlayerProps {
+    [key: string]: unknown
     value: string
     number: number
   }

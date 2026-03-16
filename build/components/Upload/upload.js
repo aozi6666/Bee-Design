@@ -68,7 +68,7 @@ export const Upload = (props) => {
     // （beforeUpload： “上传前钩子”）
     const uploadFiles = (files, test) => {
         // 传来的文件列表 FileList类型，不是数组  =》 转为数组
-        let postFiles = Array.from(files);
+        const postFiles = Array.from(files);
         // 
         if (test) {
             console.log('drag', postFiles[0]);
@@ -103,7 +103,7 @@ export const Upload = (props) => {
     // 函数： 发axios请求
     const post = (file) => {
         // 改造浏览器原生File，创建 内部文件对象 `_file` （文件本体 + 上传状态）
-        let _file = {
+        const _file = {
             uid: Date.now() + 'upload-file',
             status: 'ready',
             name: file.name,

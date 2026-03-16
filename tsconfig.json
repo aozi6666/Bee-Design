@@ -2,6 +2,8 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "esModuleInterop": true,
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["jest", "@testing-library/jest-dom"]
   },
   "files": [],

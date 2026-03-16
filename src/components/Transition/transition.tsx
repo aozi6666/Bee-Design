@@ -11,22 +11,21 @@ const Transition = (props: TransitionProps) => {
     wrapper = false,
     unmountOnExit = true,
     appear = true,
-    addEndListener,
+    timeout,
     ...restProps
   } = props
   const cls = animation ? animation : classNamesProp
   const nodeRef = useRef<HTMLDivElement>(null)
 
-  const transitionProps: any = {
-    classNames: cls,
-    unmountOnExit,
-    appear,
-    ...restProps,
-  }
-  if (addEndListener) transitionProps.addEndListener = addEndListener
-
   return (
-    <CSSTransition nodeRef={nodeRef} {...transitionProps}>
+    <CSSTransition
+      nodeRef={nodeRef}
+      classNames={cls}
+      unmountOnExit={unmountOnExit}
+      appear={appear}
+      timeout={timeout}
+      {...restProps}
+    >
       {/* React 19 下避免 findDOMNode：始终提供一个可 ref 的 wrapper */}
       <div ref={nodeRef} data-transition-wrapper={wrapper ? 'true' : 'false'}>
         {children}

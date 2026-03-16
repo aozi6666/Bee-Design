@@ -58,24 +58,37 @@ export const AutoComplete = (props: AutoCompleteProps) => {
 
   // 监听 `debouncedValue` 变化
   useEffect(() => {
-    if (debouncedValue && triggerSearch.current) {
-      setSugestions([])
-      const results = fetchSuggestions(debouncedValue)
-      if (results instanceof Promise) {
+    const schedule = (fn: () => void) => {
+      queueMicrotask(fn)
+    }
+
+    if (!debouncedValue || !triggerSearch.current) {
+      schedule(() => {
+        setShowDropdown(false)
+        setHighlightIndex(-1)
+      })
+      return
+    }
+
+    const results = fetchSuggestions(debouncedValue)
+    if (results instanceof Promise) {
+      schedule(() => {
         setLoading(true)
-        results.then(data => {
-          setLoading(false)
-          setSugestions(data)
-          setShowDropdown(data.length > 0)
-        })
-      } else {
+        setHighlightIndex(-1)
+      })
+      results.then(data => {
+        setLoading(false)
+        setSugestions(data)
+        setShowDropdown(data.length > 0)
+      })
+    } else {
+      schedule(() => {
+        setLoading(false)
         setSugestions(results)
         setShowDropdown(results.length > 0)
-      }
-    } else {
-      setShowDropdown(false)
+        setHighlightIndex(-1)
+      })
     }
-    setHighlightIndex(-1)
   }, [debouncedValue, fetchSuggestions])
   const highlight = (index: number) => {
     if (index < 0) index = 0

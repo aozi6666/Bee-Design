@@ -81,8 +81,8 @@ BCustomComplete.storyName = '2 自定义搜索结果模版'
 const handleFetchAjax = (query: string) => {
   return fetch(`https://api.github.com/search/users?q=${query}`)
     .then(res => res.json())
-    .then(({ items }) => {
-      return items.slice(0, 10).map((item: any) => ({ value: item.login, ...item }))
+    .then((data: { items: GithubUserProps[] }) => {
+      return data.items.slice(0, 10).map((item) => ({ value: item.login, ...item }))
     })
 }
 const renderOptionAjax = (item: DataSourceType) => {

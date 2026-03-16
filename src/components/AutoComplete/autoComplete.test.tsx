@@ -7,7 +7,7 @@ import type { AutoCompleteProps, DataSourceType } from './autoComplete.types'
 
 config.disabled = true
 jest.mock('../Icon/icon', () => {
-  return (props: any) => {
+  return (props: { onClick?: () => void; icon?: React.ReactNode }) => {
     return <span onClick={props.onClick}>{props.icon}</span>
   }
 })
@@ -18,7 +18,7 @@ const testArray = [
   {value: 'c', number: 15},
 ]
 const renderOption = (item: DataSourceType) => {
-  const itemWithNumber = item as DataSourceType<{ value: string; number: number }>
+  const itemWithNumber = item as unknown as DataSourceType<{ value: string; number: number }>
   return (
     <>name: {itemWithNumber.value}</>
   )

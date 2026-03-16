@@ -7,9 +7,9 @@ interface DataSourceObject {
 }
 // 别的字段数据T，“拼”在 item 上
 // 泛型 <>: 制作 泛型模板，给“类型”留位置(类似 函数参数是给“值”留位置)
-// <T = {}>， 没传 T，那默认 T 就是 {} 空数组
+// <T = Record<string, unknown>>， 没传 T，那默认 T 就是一个“对象”形状
 // & 交叉类型（Intersection Type）：类型要 同时满足左边和右边
-export type DataSourceType<T = {}> = T & DataSourceObject
+export type DataSourceType<T = Record<string, unknown>> = T & DataSourceObject
 
 // Omit<,>从一个类型里，删掉某些属性
 // extends: 继承（直接使用）

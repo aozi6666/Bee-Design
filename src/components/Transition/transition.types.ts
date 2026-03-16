@@ -7,14 +7,10 @@ export type AnimationName =
   | 'zoom-in-bottom'
   | 'zoom-in-right'
 
-export type TransitionProps = Omit<
-  CSSTransitionProps<HTMLElement>,
-  'addEndListener' | 'timeout'
-> & {
+export type TransitionProps = Omit<CSSTransitionProps<HTMLElement>, 'timeout'> & {
   animation?: AnimationName
   wrapper?: boolean
   children?: ReactNode
-  timeout: CSSTransitionProps<HTMLElement>['timeout']
-  addEndListener?: (node: HTMLElement, done: () => void) => void
+  timeout: NonNullable<CSSTransitionProps<HTMLElement>['timeout']>
 }
 

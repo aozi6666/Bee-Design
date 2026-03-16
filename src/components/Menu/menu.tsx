@@ -1,7 +1,8 @@
-import React, { useState, createContext } from 'react'
+import React, { useState } from 'react'
 import type { FC, CSSProperties, ReactNode } from 'react'
 import classNames from 'classnames'
 import type { MenuItemProps } from './menuItem'
+import { MenuContext } from './menuContext'
 
 type MenuMode = 'horizontal' | 'vertical'
 export interface MenuProps {
@@ -17,14 +18,6 @@ export interface MenuProps {
   defaultOpenSubMenus?: string[];
   children?: ReactNode;
 }
-interface IMenuContext {
-  index: string;
-  onSelect?: (selectedIndex: string) => void;
-  mode?: MenuMode;
-  defaultOpenSubMenus?: string[];  
-}
-
-export const MenuContext = createContext<IMenuContext>({index: '0'})
 /**
  * 为网站提供导航功能的菜单。支持横向纵向两种模式，支持下拉菜单。
  * 
@@ -54,7 +47,7 @@ export const Menu: FC<MenuProps> = ({
       onSelect(index)
     }
   }
-  const passedContext: IMenuContext = {
+  const passedContext = {
     index: currentActive ? currentActive : '0',
     onSelect: handleClick,
     mode,

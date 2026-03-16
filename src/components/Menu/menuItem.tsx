@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import type { FC, ReactNode } from 'react'
 import classNames from 'classnames'
-import { MenuContext } from './menu'
+import { MenuContext } from './menuContext'
 export interface MenuItemProps {
   index?: string;
   /**选项是否被禁用 */

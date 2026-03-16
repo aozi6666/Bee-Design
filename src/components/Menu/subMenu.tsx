@@ -1,7 +1,7 @@
 import React,{ useContext, useState } from 'react'
 import type { FC, FunctionComponentElement, ReactNode } from 'react'
 import classNames from 'classnames'
-import { MenuContext } from './menu'
+import { MenuContext } from './menuContext'
 import type { MenuItemProps } from './menuItem'
 import Icon from '../Icon/icon'
 import Transition from '../Transition/transition'
@@ -16,7 +16,7 @@ export interface SubMenuProps {
 
 export const SubMenu: FC<SubMenuProps> = ({ index, title, children, className}) => {
   const context = useContext(MenuContext)
-  const openedSubMenus = context.defaultOpenSubMenus as Array<string>
+  const openedSubMenus = (context.defaultOpenSubMenus ?? []) as string[]
   const isOpend = (index && context.mode === 'vertical') ? openedSubMenus.includes(index) : false
   const [ menuOpen, setOpen ] = useState(isOpend)
   const classes = classNames('menu-item submenu-item', className, {
@@ -28,9 +28,9 @@ export const SubMenu: FC<SubMenuProps> = ({ index, title, children, className}) 
     e.preventDefault()
     setOpen(!menuOpen)
   }
-  let timer: any
+  let timer: ReturnType<typeof setTimeout> | undefined
   const handleMouse = (e: React.MouseEvent, toggle: boolean) => {
-    clearTimeout(timer)
+    if (timer) clearTimeout(timer)
     e.preventDefault()
     timer = setTimeout(() => {
       setOpen(toggle)

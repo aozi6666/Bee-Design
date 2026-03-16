@@ -8,7 +8,7 @@ import type { UploadProps } from './upload'
 // 测试环境准备
 // 1. mock axios请求
 jest.mock('../Icon/icon', () => {
-  return (props: any) => {
+  return (props: { onClick?: () => void; icon?: React.ReactNode }) => {
     return <span onClick={props.onClick}>{props.icon}</span>
   }
 })

@@ -1,6 +1,8 @@
 import React from 'react'
-import { render, RenderResult, fireEvent, waitFor } from '@testing-library/react'
-import Menu, {MenuProps} from './menu'
+import { render, fireEvent, waitFor } from '@testing-library/react'
+import type { RenderResult } from '@testing-library/react'
+import Menu from './menu'
+import type { MenuProps } from './menu'
 import MenuItem from './menuItem'
 import SubMenu from './subMenu'
 jest.mock('../Icon/icon', () => {
@@ -10,7 +12,7 @@ jest.mock('../Icon/icon', () => {
 })
 jest.mock('react-transition-group', () => {
   return {
-    CSSTransition: (props: any) => {
+    CSSTransition: (props: { children?: React.ReactNode }) => {
       return props.children
     }
   }

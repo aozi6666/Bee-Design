@@ -40,11 +40,12 @@ export const AutoComplete = (props: AutoCompleteProps) => {
   // 防抖Hook：把“频繁输入”变成“停顿后再触发一次”
   const debouncedValue = useDebounce(inputValue, 300);
 
-  // 自定义Hook：点击组件外部时关闭下拉
+  // 自定义Hook：点击组件外部时,触发自定义的回调
   /* 在 `document` 上挂一个 `click` 监听
    * @param componentRef 组件的 ref
    * @param callback 点击外部时执行的回调
    */
+  // componentRef： 指向 AutoComplete 最外层 DOM
   useClickOutside(componentRef, () => {
     setSugestions([]);
     setShowDropdown(false);

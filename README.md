@@ -25,14 +25,43 @@ import "@aozi6666/bee-design/build/index.css";
 
 const App = () => (
   <div style={{ padding: 24 }}>
-    <Button>Bee Design Button</Button>
+    <Button btnType="primary">Bee Design Button</Button>
   </div>
 );
 
 createRoot(document.getElementById("root")!).render(<App />);
 ```
 
-> **提示**：推荐在业务项目中从包入口导入组件（如 `import { Button } from "@aozi6666/bee-design"`）。样式可按需引入 `@aozi6666/bee-design/build/index.css`。
+> **提示**：推荐在业务项目中从包入口导入组件（如 `import { Button } from "@aozi6666/bee-design"`）。样式需要在应用入口处引入一次 `@aozi6666/bee-design/build/index.css`。
+
+```tsx
+import { Button } from "@aozi6666/bee-design";
+import "@aozi6666/bee-design/build/index.css";
+
+export default function Demo() {
+  return (
+    <div style={{ display: "flex", gap: 12, alignItems: "center", padding: 24 }}>
+      <Button btnType="primary">Primary</Button>
+      <Button btnType="default">Default</Button>
+      <Button btnType="danger">Danger</Button>
+      <Button btnType="primary" size="lg">
+        Large
+      </Button>
+      <Button btnType="primary" size="sm">
+        Small
+      </Button>
+      <Button btnType="link" href="https://example.com" target="_blank">
+        Link
+      </Button>
+      <Button btnType="primary" disabled>
+        Disabled
+      </Button>
+    </div>
+  );
+}
+```
+
+> **样式说明**：`Button` 的样式来自 `@aozi6666/bee-design/build/index.css`（包含 `.btn`、`.btn-primary`、`.btn-lg` 等类名）。在你的应用入口处引入一次即可。
 
 ---
 
@@ -50,8 +79,9 @@ createRoot(document.getElementById("root")!).render(<App />);
 Bee Design 当前提供以下组件（持续扩展中）：
 
 - **Button 按钮**
-  - 类型：`primary` / `default` / `danger` / `link`
-  - 支持 `href` / `target`、禁用状态等
+  - 类型（`btnType`）：`primary` / `default` / `danger` / `link`
+  - 尺寸（`size`）：`lg` / `sm`
+  - `link` 类型支持 `href` / `target`；支持禁用状态等
 - **Input 输入框**
   - 支持前后缀图标、禁用状态、清空等能力
 - **AutoComplete 自动完成**

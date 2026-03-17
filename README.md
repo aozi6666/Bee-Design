@@ -1,7 +1,7 @@
 ## Bee Design
 
 React UI Component Library inspired by Honeycomb 🐝  
-一个基于 React + TypeScript 的轻量级组件库，用来练习和演示现代前端工程化（组件开发、单元测试、Storybook、CI 等）实践。
+一个基于 React + TypeScript 的轻量级组件库，用来演示现代前端工程化（组件开发、单元测试、Storybook、CI 等）实践。
 
 ### GitHub
 

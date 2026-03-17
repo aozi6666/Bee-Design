@@ -8,7 +8,7 @@ module.exports = {
   mode: isProd ? 'production' : 'development',
   entry: './Webpack/main.ts',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'dist_webpack'),
     filename: 'bundle.js',
   },
   resolve: {

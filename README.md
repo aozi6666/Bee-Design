@@ -83,33 +83,41 @@ Bee Design 当前提供以下组件（持续扩展中）：
 以 `AutoComplete` 为例：
 
 ```tsx
-import React, { useCallback } from "react";
+import { useCallback, useState } from "react";
 import AutoComplete, {
   type DataSourceType,
 } from "@aozi6666/bee-design/build/components/AutoComplete";
 import "@aozi6666/bee-design/build/index.css";
 
-interface LakerPlayer {
-  value: string;
-  number: number;
-}
-
-const players: Array<DataSourceType<LakerPlayer>> = [
+const players: Array<DataSourceType<Record<string, unknown>>> = [
   { value: "bradley", number: 11 },
   { value: "james", number: 23 },
-  // ...
+  { value: "cook", number: 2 },
+  { value: "cousins", number: 15 },
+  { value: "davis", number: 3 },
+  { value: "green", number: 14 },
+  { value: "howard", number: 39 },
+  { value: "kuzma", number: 0 },
+  { value: "mcgee", number: 7 },
+  { value: "rondo", number: 9 },
 ];
 
-const Demo = () => {
-  const fetchSuggestions = useCallback(
-    (query: string) => players.filter((p) => p.value.toLowerCase().includes(query.toLowerCase())),
-    [],
-  );
+function App() {
+  const [count, setCount] = useState(0);
+
+  const fetchSuggestions = useCallback((query: string) => {
+    const q = query.toLowerCase();
+    return players.filter((p) => p.value.toLowerCase().includes(q));
+  }, []);
 
   return (
-    <AutoComplete fetchSuggestions={fetchSuggestions} placeholder="输入湖人队球员英文名试试" />
+    <div style={{ padding: 24 }}>
+      <AutoComplete fetchSuggestions={fetchSuggestions} placeholder="输入湖人队球员英文名试试" />
+    </div>
   );
-};
+}
+
+export default App;
 ```
 
 > **建议**：`fetchSuggestions` 推荐使用 `useCallback` 包裹，避免在父组件重复渲染时创建新函数，从而触发不必要的副作用或额外请求。

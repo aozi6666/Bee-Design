@@ -8,12 +8,7 @@ import sass from "rollup-plugin-sass";
 const overrides = {
   // 打开：生成类型声明文件 .d.ts
   compilerOptions: { declaration: true },
-  exclude: [
-    "src/**/*.test.ts?(x)",
-    "src/**/*.stories.ts?(x)",
-    "src/**/*.stories.mdx",
-    "src/setupTests.ts",
-  ],
+  exclude: ["**/*.test.ts?(x)", "**/*.stories.ts?(x)", "**/*.stories.mdx", "**/setupTests.ts"],
 };
 
 // 基础公共配置
@@ -33,7 +28,14 @@ const config = {
     // 允许导入 json 文件
     json(),
     // 处理 TS / TSX，并生成声明文件相关能力
-    typescript({ tsconfigOverride: overrides, useTsconfigDeclarationDir: false }),
+    // 显式使用构建用 tsconfig，避免默认读取 tsconfig.json 导致模块解析不一致
+    typescript({
+      tsconfig: "tsconfig.build.json",
+      tsconfigOverride: overrides,
+      // 打包发布产物时不做全量 type-check（避免 story/test 等非入口文件阻塞构建）
+      check: false,
+      useTsconfigDeclarationDir: false,
+    }),
     // 把scss样式打成 dist/index.css
     sass({ output: "dist/index.css" }),
   ],

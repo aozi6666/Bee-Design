@@ -1,5 +1,5 @@
 /* 打 ES Module 版本产物 */
-import basicConfig from "./rollup.config";
+import basicConfig from "./rollup.config.js";
 import excludeDependenciesFromBundle from "rollup-plugin-exclude-dependencies-from-bundle";
 
 const config = {

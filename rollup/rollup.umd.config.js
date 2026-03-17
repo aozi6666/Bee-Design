@@ -3,8 +3,7 @@
   - UMD 是一种“兼容性更广”的打包格式，
   - 适合 script 标签、老环境、CDN 直接挂全局变量的场景 
 */
-import basicConfig from "./rollup.config";
-import { terser } from "rollup-plugin-terser";
+import basicConfig from "./rollup.config.js";
 import replace from "@rollup/plugin-replace";
 
 const config = {
@@ -23,8 +22,6 @@ const config = {
         classnames: "classNames",
         lodash: "lodash",
       },
-      // 压缩代码
-      plugins: [terser()],
       sourcemap: true,
     },
   ],

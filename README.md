@@ -20,19 +20,19 @@ yarn add @aozi6666/bee-design
 ```tsx
 import React from "react";
 import { createRoot } from "react-dom/client";
-import BeeButton from "@aozi6666/bee-design/build/components/Button";
+import { Button } from "@aozi6666/bee-design";
 import "@aozi6666/bee-design/build/index.css";
 
 const App = () => (
   <div style={{ padding: 24 }}>
-    <BeeButton>Bee Design Button</BeeButton>
+    <Button>Bee Design Button</Button>
   </div>
 );
 
 createRoot(document.getElementById("root")!).render(<App />);
 ```
 
-> **提示**：发布到 npm 后，推荐在业务项目中通过别名导入，如 `import { Button } from '@aozi6666/bee-design'`。当前版本的打包入口为 `build/index.js`，已经在 `package.json` 中配置好。
+> **提示**：推荐在业务项目中从包入口导入组件（如 `import { Button } from "@aozi6666/bee-design"`）。样式可按需引入 `@aozi6666/bee-design/build/index.css`。
 
 ---
 

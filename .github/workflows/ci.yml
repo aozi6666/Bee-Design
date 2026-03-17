@@ -1,5 +1,6 @@
 name: CI
 
+# 当发生 push代码/ pull request -> 运行 CI
 on:
   push:
     branches: [main, master]
@@ -16,19 +17,17 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # 测试和构建
   test-and-build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.x]
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20.x
           cache: npm
 
       - name: Install
@@ -43,6 +42,7 @@ jobs:
       - name: Build
         run: npm run build
 
+  # 部署到 Storybook
   deploy-pages:
     needs: test-and-build
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
@@ -68,7 +68,7 @@ jobs:
         uses: actions/upload-pages-artifact@3
         with:
           path: storybook-static
-
+  # 部署到 GitHub Pages
   deploy:
     needs: deploy-pages
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')

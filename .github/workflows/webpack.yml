@@ -1,10 +1,8 @@
-name: NodeJS with Webpack
+name: NodeJS Webpack Compatibility
 
+# 手动触发：需要时再在多个 Node 版本上验证 webpack 构建
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -15,14 +13,16 @@ jobs:
         node-version: [18.x, 20.x, 22.x]
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
 
-    - name: Build
-      run: |
-        npm install
-        npx webpack
+      - name: Install
+        run: npm ci
+
+      - name: Webpack build
+        run: npx webpack

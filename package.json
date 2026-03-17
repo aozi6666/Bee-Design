@@ -13,14 +13,25 @@
   "type": "module",
   "files": [
     "build",
+    "dist",
     "README.md"
   ],
-  "main": "build/index.js",
-  "module": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "dist/index.cjs",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.esm.js"
+    },
+    "./style.css": "./dist/index.css"
+  },
   "scripts": {
     "dev": "vite",
-    "clean": "rimraf ./build",
+    "clean": "rimraf ./build ./dist",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
     "lint": "eslint --ext js,ts,tsx src --max-warnings 5",
     "lint:fix": "npm run lint -- --fix",
     "stylelint": "stylelint \"src/**/*.{css,scss}\"",
@@ -28,12 +39,13 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint:staged": "lint-staged",
-    "build": "npm run clean && npm run build-ts && npm run build-css",
-    "build-ts": "tsc -p tsconfig.build.json",
-    "build-css": "sass ./src/styles/index.scss ./build/index.css",
-    "build:bundle": "rimraf ./dist && npm run build:bundle:esm && npm run build:bundle:umd",
+    "build": "npm run clean && npm run build:types && npm run build:bundle",
+    "build:types": "tsc -p tsconfig.build.json",
+    "build:bundle": "npm run build:bundle:esm && npm run build:bundle:cjs && npm run build:bundle:umd",
     "build:bundle:esm": "rollup -c rollup/rollup.esm.config.js",
+    "build:bundle:cjs": "rollup -c rollup/rollup.cjs.config.js",
     "build:bundle:umd": "rollup -c rollup/rollup.umd.config.js",
+    "release": "npm run typecheck && npm run test:ci && npm run lint && npm run build",
     "webpack:dev": "webpack",
     "webpack:build": "NODE_ENV=production webpack",
     "storybook": "storybook dev -p 6006",
@@ -42,7 +54,7 @@
     "preview": "vite preview",
     "test": "jest",
     "test:ci": "cross-env CI=true jest",
-    "prepublishOnly": "npm run test:ci && npm run lint && npm run build",
+    "prepublishOnly": "npm run release",
     "prepare": "husky"
   },
   "lint-staged": {

@@ -6,8 +6,8 @@ import sass from "rollup-plugin-sass";
 
 // 只用于打包发布产物，不包含测试 / story / setup
 const overrides = {
-  // 打开：生成类型声明文件 .d.ts
-  compilerOptions: { declaration: true },
+  // Rollup 阶段只做 JS/CSS bundle；类型声明由 `tsc -p tsconfig.build.json` 单独生成到 build/
+  compilerOptions: { declaration: false, declarationMap: false },
   exclude: ["**/*.test.ts?(x)", "**/*.stories.ts?(x)", "**/*.stories.mdx", "**/setupTests.ts"],
 };
 
@@ -30,7 +30,7 @@ const config = {
     // 处理 TS / TSX，并生成声明文件相关能力
     // 显式使用构建用 tsconfig，避免默认读取 tsconfig.json 导致模块解析不一致
     typescript({
-      tsconfig: "tsconfig.build.json",
+      tsconfig: "tsconfig.rollup.json",
       tsconfigOverride: overrides,
       // 打包发布产物时不做全量 type-check（避免 story/test 等非入口文件阻塞构建）
       check: false,

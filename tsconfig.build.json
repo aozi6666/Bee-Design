@@ -1,8 +1,10 @@
 {
   "extends": "./tsconfig.app.json",
   "compilerOptions": {
-    "outDir": "build",
+    "outDir": "dist",
     "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": false,
     "noEmit": false,
     "jsx": "react-jsx",
     "moduleResolution": "bundler",
@@ -10,9 +12,5 @@
     "types": ["react", "react-dom", "jest", "@testing-library/jest-dom", "mdx"]
   },
   "include": ["src"],
-  "exclude": [
-    "src/**/*.test.*",
-    "src/**/*.stories.*",
-    "src/stories/**/*"
-  ]
+  "exclude": ["src/**/*.test.*", "src/**/*.stories.*", "src/stories/**/*"]
 }

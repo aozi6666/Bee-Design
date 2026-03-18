@@ -14,7 +14,7 @@ import { defineConfig, globalIgnores } from "eslint/config";
 
 // 忽略检查 dist 目录
 export default defineConfig([
-  globalIgnores(["dist"]),
+  globalIgnores(["**/dist/**"]),
   {
     files: ["**/*.{ts,tsx}"],
     // 启用这些推荐规则

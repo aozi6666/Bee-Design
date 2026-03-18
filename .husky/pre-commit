@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
 # 快速提交校验：只检查本次暂存的文件
-npm run lint:staged
+pnpm lint:staged

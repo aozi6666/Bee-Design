@@ -1,0 +1,21 @@
+// 使用 Sass 新模块系统，集中引入全局样式和组件样式
+@use "variables";
+@use "mixin";
+@use "reboot";
+@use "animation";
+
+// 组件样式（直接混入全局，避免命名空间重复）
+@use "../components/Button/style" as *;
+@use "../components/Icon/style" as *;
+@use "../components/Upload/style" as *;
+@use "../components/Progress/style" as *;
+
+// 下面这些组件样式暂时还没实现，等写到对应组件时再打开
+// @use "../components/Alert/style";
+// @use "../components/Menu/style";
+// @use "../components/Tabs/style";
+@use "../components/Input/style" as *;
+
+// @use "../components/AutoComplete/style";
+// @use "../components/Select/style";
+// @use "../components/Form/style";

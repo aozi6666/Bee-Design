@@ -16,7 +16,7 @@ const overrides = {
 // 基础公共配置
 const config = {
   // 打包 入口文件
-  input: "src/index.tsx",
+  input: "src/index.ts",
   // 这些依赖在真实项目中会被外部应用自己的打包工具处理
   external: ["react", "react-dom", "axios", "classnames", "lodash"],
   // 配置插件
@@ -40,7 +40,8 @@ const config = {
       // Windows 上 node_modules/.cache 的 rename 容易被占用导致 EPERM
       cacheRoot: path.join(os.tmpdir(), "bee-design-rpt2-cache"),
     }),
-    // 把scss样式打成 dist/index.css
+    // 兼容：若入口仍有样式导入，可继续产出 dist/index.css
+    // 推荐改为使用 `pnpm build:css` 单独生成（避免默认入口引入全局样式产生隐式副作用）
     sass({ output: "dist/index.css" }),
   ],
 };

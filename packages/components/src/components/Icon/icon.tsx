@@ -2,6 +2,7 @@ import type { FC } from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { IconProps } from "./icon.types";
+import { setupIcons } from "../../setupIcons";
 
 /**
  * 提供了一套常用的图标集合 基于 react-fontawesome。
@@ -16,6 +17,7 @@ import type { IconProps } from "./icon.types";
  * ~~~
  */
 export const Icon: FC<IconProps> = (props) => {
+  setupIcons();
   // icon-primary
   const { className, theme, ...restProps } = props;
   const classes = classNames("viking-icon", className, {

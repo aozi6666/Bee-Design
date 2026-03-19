@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "lint": "eslint --ext js,ts,tsx packages --max-warnings 5",
+    "lint": "eslint --ext js,ts,tsx packages apps --max-warnings 5",
     "lint:fix": "pnpm lint -- --fix",
-    "stylelint": "stylelint \"packages/**/*.{css,scss}\"",
+    "stylelint": "stylelint \"packages/**/*.{css,scss}\" \"apps/**/*.{css,scss}\"",
     "stylelint:fix": "pnpm stylelint -- --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -15,8 +15,8 @@
     "components:test:ci": "pnpm -C packages/components test:ci",
     "components:typecheck": "pnpm -C packages/components typecheck",
     "components:lint": "pnpm -C packages/components lint",
-    "docs:dev": "pnpm -C packages/docs-site storybook",
-    "docs:build": "pnpm -C packages/docs-site build-storybook",
+    "docs:dev": "pnpm -C apps/docs-site storybook",
+    "docs:build": "pnpm -C apps/docs-site build-storybook",
     "release": "pnpm components:typecheck && pnpm components:test:ci && pnpm components:lint && pnpm components:build",
     "prepare": "husky"
   },

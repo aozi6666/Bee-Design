@@ -1,0 +1,107 @@
+{
+  "files": {
+    "packages/utils/dist/react/mergeRefs.js": {
+      "size": 402,
+      "mtime_nanos": 1773888651877739900,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/utils/dist/object": { "size": 0, "mtime_nanos": 0, "mode": 0, "is_dir": true },
+    "packages/utils/dist/object/pickOmit.js": {
+      "size": 306,
+      "mtime_nanos": 1773888651871735400,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/utils/dist/number/clamp.d.ts": {
+      "size": 80,
+      "mtime_nanos": 1773888651869730900,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/utils/dist/dom": { "size": 0, "mtime_nanos": 0, "mode": 0, "is_dir": true },
+    "packages/utils/dist/react/composeEventHandlers.d.ts": {
+      "size": 298,
+      "mtime_nanos": 1773888651876747700,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/utils/dist/react": { "size": 0, "mtime_nanos": 0, "mode": 0, "is_dir": true },
+    "packages/utils/dist/dom/getScrollParent.js": {
+      "size": 626,
+      "mtime_nanos": 1773888651880747300,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/utils/dist": { "size": 0, "mtime_nanos": 0, "mode": 0, "is_dir": true },
+    "packages/utils/dist/number": { "size": 0, "mtime_nanos": 0, "mode": 0, "is_dir": true },
+    "packages/utils/dist/react/mergeRefs.d.ts": {
+      "size": 149,
+      "mtime_nanos": 1773888651879247200,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/utils/dist/dom/getScrollParent.d.ts": {
+      "size": 122,
+      "mtime_nanos": 1773888651881751300,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/utils/dist/react/composeEventHandlers.js": {
+      "size": 320,
+      "mtime_nanos": 1773888651873741100,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/utils/dist/number/clamp.js": {
+      "size": 194,
+      "mtime_nanos": 1773888651866736200,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/utils/dist/index.js": {
+      "size": 276,
+      "mtime_nanos": 1773888651882256600,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/utils/dist/index.d.ts": {
+      "size": 276,
+      "mtime_nanos": 1773888651882755900,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/utils/.turbo/turbo-build.log": {
+      "size": 347,
+      "mtime_nanos": 1773888651913350100,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/utils/dist/object/pickOmit.d.ts": {
+      "size": 246,
+      "mtime_nanos": 1773888651872740700,
+      "mode": 420,
+      "is_dir": false
+    }
+  },
+  "order": [
+    "packages/utils/.turbo/turbo-build.log",
+    "packages/utils/dist",
+    "packages/utils/dist/dom",
+    "packages/utils/dist/dom/getScrollParent.d.ts",
+    "packages/utils/dist/dom/getScrollParent.js",
+    "packages/utils/dist/index.d.ts",
+    "packages/utils/dist/index.js",
+    "packages/utils/dist/number",
+    "packages/utils/dist/number/clamp.d.ts",
+    "packages/utils/dist/number/clamp.js",
+    "packages/utils/dist/object",
+    "packages/utils/dist/object/pickOmit.d.ts",
+    "packages/utils/dist/object/pickOmit.js",
+    "packages/utils/dist/react",
+    "packages/utils/dist/react/composeEventHandlers.d.ts",
+    "packages/utils/dist/react/composeEventHandlers.js",
+    "packages/utils/dist/react/mergeRefs.d.ts",
+    "packages/utils/dist/react/mergeRefs.js"
+  ]
+}

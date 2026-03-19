@@ -1,0 +1,402 @@
+{
+  "files": {
+    "packages/components/dist/components/Menu": {
+      "size": 0,
+      "mtime_nanos": 0,
+      "mode": 0,
+      "is_dir": true
+    },
+    "packages/components/dist": { "size": 0, "mtime_nanos": 0, "mode": 0, "is_dir": true },
+    "packages/components/dist/components/Input/input.d.ts": {
+      "size": 208,
+      "mtime_nanos": 1773888653511688300,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Icon/index.d.ts": {
+      "size": 48,
+      "mtime_nanos": 1773888653510184300,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Input": {
+      "size": 0,
+      "mtime_nanos": 0,
+      "mode": 0,
+      "is_dir": true
+    },
+    "packages/components/dist/components/Menu/index.d.ts": {
+      "size": 347,
+      "mtime_nanos": 1773888653531205800,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Menu/menu.d.ts": {
+      "size": 872,
+      "mtime_nanos": 1773888653530201600,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Progress/index.d.ts": {
+      "size": 60,
+      "mtime_nanos": 1773888653510184300,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/hooks": { "size": 0, "mtime_nanos": 0, "mode": 0, "is_dir": true },
+    "packages/components/dist/setupTests.d.ts": {
+      "size": 36,
+      "mtime_nanos": 1773888653533210500,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/AutoComplete": {
+      "size": 0,
+      "mtime_nanos": 0,
+      "mode": 0,
+      "is_dir": true
+    },
+    "packages/components/dist/App.d.ts": {
+      "size": 106,
+      "mtime_nanos": 1773888653526702700,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Input/index.d.ts": {
+      "size": 120,
+      "mtime_nanos": 1773888653531709600,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/index.esm.js.map": {
+      "size": 801,
+      "mtime_nanos": 1773888655000674700,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/main.d.ts": {
+      "size": 30,
+      "mtime_nanos": 1773888653532710300,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/index.umd.js": {
+      "size": 1203104,
+      "mtime_nanos": 1773888658300254900,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/index.css": {
+      "size": 15602,
+      "mtime_nanos": 1773888658780496800,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/index.esm.js": {
+      "size": 30488,
+      "mtime_nanos": 1773888655000674700,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Menu/menuContext.d.ts": {
+      "size": 285,
+      "mtime_nanos": 1773888653528701400,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Menu/menuItem.d.ts": {
+      "size": 411,
+      "mtime_nanos": 1773888653529703100,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Transition/index.d.ts": {
+      "size": 134,
+      "mtime_nanos": 1773888653532210000,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Upload/upload.types.d.ts": {
+      "size": 1609,
+      "mtime_nanos": 1773888653502691300,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Progress/progress.d.ts": {
+      "size": 156,
+      "mtime_nanos": 1773888653507184100,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Upload": {
+      "size": 0,
+      "mtime_nanos": 0,
+      "mode": 0,
+      "is_dir": true
+    },
+    "packages/components/dist/components/Button/index.d.ts": {
+      "size": 54,
+      "mtime_nanos": 1773888653526702700,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/AutoComplete/autoComplete.types.d.ts": {
+      "size": 902,
+      "mtime_nanos": 1773888653514193200,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/hooks/useDebounce.d.ts": {
+      "size": 90,
+      "mtime_nanos": 1773888653512693100,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/.turbo/turbo-build.log": {
+      "size": 1517,
+      "mtime_nanos": 1773888658825171700,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Menu/subMenu.d.ts": {
+      "size": 321,
+      "mtime_nanos": 1773888653530201600,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/setupIcons.d.ts": {
+      "size": 44,
+      "mtime_nanos": 1773888653505186300,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Transition/transition.d.ts": {
+      "size": 255,
+      "mtime_nanos": 1773888653523709000,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Input/input.types.d.ts": {
+      "size": 738,
+      "mtime_nanos": 1773888653510684900,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Upload/dragger.d.ts": {
+      "size": 208,
+      "mtime_nanos": 1773888653508684400,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Button/button.d.ts": {
+      "size": 320,
+      "mtime_nanos": 1773888653500676700,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/hooks/useClickOutside.d.ts": {
+      "size": 234,
+      "mtime_nanos": 1773888653513194100,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Transition/transition.types.d.ts": {
+      "size": 453,
+      "mtime_nanos": 1773888653515192600,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Upload/index.d.ts": {
+      "size": 54,
+      "mtime_nanos": 1773888653509683300,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Icon": {
+      "size": 0,
+      "mtime_nanos": 0,
+      "mode": 0,
+      "is_dir": true
+    },
+    "packages/components/dist/components/Upload/native/axios-react.d.ts": {
+      "size": 63,
+      "mtime_nanos": 1773888653533711100,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Upload/native": {
+      "size": 0,
+      "mtime_nanos": 0,
+      "mode": 0,
+      "is_dir": true
+    },
+    "packages/components/dist/components/Icon/icon.d.ts": {
+      "size": 558,
+      "mtime_nanos": 1773888653506184800,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components": {
+      "size": 0,
+      "mtime_nanos": 0,
+      "mode": 0,
+      "is_dir": true
+    },
+    "packages/components/dist/components/AutoComplete/autoCompleteDropdown.d.ts": {
+      "size": 509,
+      "mtime_nanos": 1773888653524209600,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Button": {
+      "size": 0,
+      "mtime_nanos": 0,
+      "mode": 0,
+      "is_dir": true
+    },
+    "packages/components/dist/components/Icon/icon.types.d.ts": {
+      "size": 339,
+      "mtime_nanos": 1773888653504183700,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Transition": {
+      "size": 0,
+      "mtime_nanos": 0,
+      "mode": 0,
+      "is_dir": true
+    },
+    "packages/components/dist/components/AutoComplete/autoComplete.d.ts": {
+      "size": 541,
+      "mtime_nanos": 1773888653525701600,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Upload/native/from-html.d.ts": {
+      "size": 59,
+      "mtime_nanos": 1773888653534210300,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Upload/upload.d.ts": {
+      "size": 308,
+      "mtime_nanos": 1773888653509683300,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/index.cjs": {
+      "size": 1244046,
+      "mtime_nanos": 1773888656642955300,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Progress/progress.types.d.ts": {
+      "size": 257,
+      "mtime_nanos": 1773888653506685300,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Progress": {
+      "size": 0,
+      "mtime_nanos": 0,
+      "mode": 0,
+      "is_dir": true
+    },
+    "packages/components/dist/components/Button/button.types.d.ts": {
+      "size": 913,
+      "mtime_nanos": 1773888653500185700,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/index.d.ts": {
+      "size": 513,
+      "mtime_nanos": 1773888653532710300,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/index.cjs.map": {
+      "size": 1723155,
+      "mtime_nanos": 1773888656642955300,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/index.umd.js.map": {
+      "size": 1619484,
+      "mtime_nanos": 1773888658300254900,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/AutoComplete/index.d.ts": {
+      "size": 198,
+      "mtime_nanos": 1773888653526201100,
+      "mode": 420,
+      "is_dir": false
+    },
+    "packages/components/dist/components/Upload/uploadList.d.ts": {
+      "size": 265,
+      "mtime_nanos": 1773888653507683900,
+      "mode": 420,
+      "is_dir": false
+    }
+  },
+  "order": [
+    "packages/components/.turbo/turbo-build.log",
+    "packages/components/dist",
+    "packages/components/dist/App.d.ts",
+    "packages/components/dist/components",
+    "packages/components/dist/components/AutoComplete",
+    "packages/components/dist/components/AutoComplete/autoComplete.d.ts",
+    "packages/components/dist/components/AutoComplete/autoComplete.types.d.ts",
+    "packages/components/dist/components/AutoComplete/autoCompleteDropdown.d.ts",
+    "packages/components/dist/components/AutoComplete/index.d.ts",
+    "packages/components/dist/components/Button",
+    "packages/components/dist/components/Button/button.d.ts",
+    "packages/components/dist/components/Button/button.types.d.ts",
+    "packages/components/dist/components/Button/index.d.ts",
+    "packages/components/dist/components/Icon",
+    "packages/components/dist/components/Icon/icon.d.ts",
+    "packages/components/dist/components/Icon/icon.types.d.ts",
+    "packages/components/dist/components/Icon/index.d.ts",
+    "packages/components/dist/components/Input",
+    "packages/components/dist/components/Input/index.d.ts",
+    "packages/components/dist/components/Input/input.d.ts",
+    "packages/components/dist/components/Input/input.types.d.ts",
+    "packages/components/dist/components/Menu",
+    "packages/components/dist/components/Menu/index.d.ts",
+    "packages/components/dist/components/Menu/menu.d.ts",
+    "packages/components/dist/components/Menu/menuContext.d.ts",
+    "packages/components/dist/components/Menu/menuItem.d.ts",
+    "packages/components/dist/components/Menu/subMenu.d.ts",
+    "packages/components/dist/components/Progress",
+    "packages/components/dist/components/Progress/index.d.ts",
+    "packages/components/dist/components/Progress/progress.d.ts",
+    "packages/components/dist/components/Progress/progress.types.d.ts",
+    "packages/components/dist/components/Transition",
+    "packages/components/dist/components/Transition/index.d.ts",
+    "packages/components/dist/components/Transition/transition.d.ts",
+    "packages/components/dist/components/Transition/transition.types.d.ts",
+    "packages/components/dist/components/Upload",
+    "packages/components/dist/components/Upload/dragger.d.ts",
+    "packages/components/dist/components/Upload/index.d.ts",
+    "packages/components/dist/components/Upload/native",
+    "packages/components/dist/components/Upload/native/axios-react.d.ts",
+    "packages/components/dist/components/Upload/native/from-html.d.ts",
+    "packages/components/dist/components/Upload/upload.d.ts",
+    "packages/components/dist/components/Upload/upload.types.d.ts",
+    "packages/components/dist/components/Upload/uploadList.d.ts",
+    "packages/components/dist/hooks",
+    "packages/components/dist/hooks/useClickOutside.d.ts",
+    "packages/components/dist/hooks/useDebounce.d.ts",
+    "packages/components/dist/index.cjs",
+    "packages/components/dist/index.cjs.map",
+    "packages/components/dist/index.css",
+    "packages/components/dist/index.d.ts",
+    "packages/components/dist/index.esm.js",
+    "packages/components/dist/index.esm.js.map",
+    "packages/components/dist/index.umd.js",
+    "packages/components/dist/index.umd.js.map",
+    "packages/components/dist/main.d.ts",
+    "packages/components/dist/setupIcons.d.ts",
+    "packages/components/dist/setupTests.d.ts"
+  ]
+}

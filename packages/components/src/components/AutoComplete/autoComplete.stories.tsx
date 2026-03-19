@@ -1,3 +1,9 @@
+/*
+“联动开发”:
+  - 改 AutoComplete 组件
+  - 对应的 story 会立刻受 响应变化
+  - docs-site 跑起来后，马上能看到最新效果
+*/
 import React from "react";
 import type { Meta, StoryFn } from "@storybook/react-vite";
 import { AutoComplete } from "./autoComplete";

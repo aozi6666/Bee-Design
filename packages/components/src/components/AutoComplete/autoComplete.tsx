@@ -1,6 +1,7 @@
 // AutoComplete 组件： 带搜索建议的 Input
 import { useState, useEffect, useRef } from "react";
 import type { ChangeEvent, KeyboardEvent } from "react";
+// 导入 utils 包里的一个函数：用于限制值在最小值和最大值之间
 import { clamp } from "@aozi6666/bee-utils";
 import Input from "../Input/input";
 import useDebounce from "../../hooks/useDebounce";
@@ -103,6 +104,7 @@ export const AutoComplete = (props: AutoCompleteProps) => {
   }, [debouncedValue, fetchSuggestions]);
 
   const highlight = (index: number) => {
+    // 调用utils: 限制索引在 0 和 （建议项长度 - 1） 之间
     const nextIndex = clamp(index, 0, suggestions.length - 1);
     setHighlightIndex(nextIndex);
   };

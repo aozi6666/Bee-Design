@@ -1,0 +1,32 @@
+{
+  "name": "@aozi6666/bee-utils",
+  "private": false,
+  "version": "0.1.0",
+  "type": "module",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "clean": "rimraf ./dist",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "build": "pnpm clean && tsc -p tsconfig.build.json"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19"
+  },
+  "devDependencies": {
+    "rimraf": "^6.1.3",
+    "typescript": "~5.9.3"
+  }
+}

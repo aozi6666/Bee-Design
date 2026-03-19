@@ -15,6 +15,8 @@
     "components:test:ci": "pnpm -C packages/components test:ci",
     "components:typecheck": "pnpm -C packages/components typecheck",
     "components:lint": "pnpm -C packages/components lint",
+    "utils:build": "pnpm -C packages/utils build",
+    "utils:typecheck": "pnpm -C packages/utils typecheck",
     "docs:dev": "pnpm -C apps/docs-site storybook",
     "docs:build": "pnpm -C apps/docs-site build-storybook",
     "release": "pnpm components:typecheck && pnpm components:test:ci && pnpm components:lint && pnpm components:build",

@@ -18,6 +18,8 @@ const config = {
   // 打包 入口文件
   input: "src/index.ts",
   // 这些依赖在真实项目中会被外部应用自己的打包工具处理
+  // 👉 “这个依赖我不打进包里，让使用者自己提供”
+  // 把 @aozi6666/bee-utils 也标成 external（Monorepo）
   external: ["react", "react-dom", "axios", "classnames", "lodash", "@aozi6666/bee-utils"],
   // 配置插件
   plugins: [

@@ -3,8 +3,8 @@ import path from "node:path";
 
 const config: StorybookConfig = {
   stories: [
-    "../../components/src/**/*.stories.@(js|jsx|mjs|ts|tsx)",
-    "../../components/src/**/*.stories.mdx",
+    "../../../packages/components/src/**/*.stories.@(js|jsx|mjs|ts|tsx)",
+    "../../../packages/components/src/**/*.stories.mdx",
   ],
   addons: [
     "@chromatic-com/storybook",
@@ -16,7 +16,7 @@ const config: StorybookConfig = {
   framework: "@storybook/react-vite",
   async viteFinal(viteConfig) {
     const workspaceRoot = path.resolve(__dirname, "..", "..", "..");
-    const componentsRoot = path.resolve(__dirname, "..", "..", "components");
+    const componentsRoot = path.resolve(__dirname, "..", "..", "..", "packages", "components");
 
     viteConfig.server ??= {};
     viteConfig.server.fs ??= {};

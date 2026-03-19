@@ -1,6 +1,7 @@
 // AutoComplete 组件： 带搜索建议的 Input
 import { useState, useEffect, useRef } from "react";
 import type { ChangeEvent, KeyboardEvent } from "react";
+import { clamp } from "@aozi6666/bee-utils";
 import Input from "../Input/input";
 import useDebounce from "../../hooks/useDebounce";
 import useClickOutside from "../../hooks/useClickOutside";
@@ -102,11 +103,8 @@ export const AutoComplete = (props: AutoCompleteProps) => {
   }, [debouncedValue, fetchSuggestions]);
 
   const highlight = (index: number) => {
-    if (index < 0) index = 0;
-    if (index >= suggestions.length) {
-      index = suggestions.length - 1;
-    }
-    setHighlightIndex(index);
+    const nextIndex = clamp(index, 0, suggestions.length - 1);
+    setHighlightIndex(nextIndex);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {

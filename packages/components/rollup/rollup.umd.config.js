@@ -21,6 +21,7 @@ const config = {
         axios: "Axios",
         classnames: "classNames",
         lodash: "lodash",
+        "@aozi6666/bee-utils": "BeeUtils",
       },
       sourcemap: true,
     },

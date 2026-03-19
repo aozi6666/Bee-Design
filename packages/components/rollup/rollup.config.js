@@ -18,7 +18,7 @@ const config = {
   // 打包 入口文件
   input: "src/index.ts",
   // 这些依赖在真实项目中会被外部应用自己的打包工具处理
-  external: ["react", "react-dom", "axios", "classnames", "lodash"],
+  external: ["react", "react-dom", "axios", "classnames", "lodash", "@aozi6666/bee-utils"],
   // 配置插件
   plugins: [
     // 依赖解析：让 Rollup 能找到 node_modules 里的包

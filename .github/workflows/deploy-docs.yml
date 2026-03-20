@@ -21,10 +21,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 版本与根目录 package.json 的 packageManager 一致，勿在此再写 version，否则会与 setup-node 冲突
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4

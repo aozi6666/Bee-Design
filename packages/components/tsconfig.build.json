@@ -9,7 +9,7 @@
     "jsx": "react-jsx",
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": false,
-    "types": ["react", "react-dom", "jest", "@testing-library/jest-dom", "mdx"]
+    "types": ["react", "react-dom", "jest", "@testing-library/jest-dom"]
   },
   "include": ["src"],
   "exclude": ["src/**/*.test.*", "src/**/*.stories.*", "src/stories/**/*"]

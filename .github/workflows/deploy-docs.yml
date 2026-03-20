@@ -32,11 +32,24 @@ jobs:
           cache: pnpm
 
       - name: Install
+        env:
+          # 避免 CI 下 husky prepare 偶发失败；与本地开发无关
+          HUSKY: "0"
         run: pnpm install --frozen-lockfile
 
-      # release 已包含 utils:typecheck/build + 组件校验与构建（含 bee-utils CJS 供 Jest、组件 dist 供 Storybook）
-      - name: Release (utils + components)
-        run: pnpm release
+      # 拆步便于在 Actions 里一眼看到失败点（exit code 2 常见于 tsc/eslint 等）
+      - name: Utils typecheck
+        run: pnpm utils:typecheck
+      - name: Utils build
+        run: pnpm utils:build
+      - name: Components typecheck
+        run: pnpm components:typecheck
+      - name: Components test (CI)
+        run: pnpm components:test:ci
+      - name: Components lint
+        run: pnpm components:lint
+      - name: Components build
+        run: pnpm components:build
 
       # 默认项目站 URL 为 https://<owner>.github.io/<repo>/，需设置 Vite base
       - name: Build Storybook

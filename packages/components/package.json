@@ -1,7 +1,7 @@
 {
   "name": "@aozi6666/bee-design",
   "private": false,
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "files": [
     "dist",
@@ -60,6 +60,7 @@
     "@rollup/plugin-node-resolve": "^16.0.0",
     "@rollup/plugin-replace": "^6.0.1",
     "@rollup/plugin-terser": "^0.4.4",
+    "@storybook/react-vite": "^10.2.17",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -114,6 +115,9 @@
           "useESM": true
         }
       ]
+    },
+    "moduleNameMapper": {
+      "^@aozi6666/bee-utils$": "<rootDir>/../utils/dist/cjs/index.js"
     }
   }
 }

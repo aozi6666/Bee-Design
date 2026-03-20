@@ -29,7 +29,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Verify & build
-        run: pnpm utils:build && pnpm release
+        run: pnpm release
 
       - name: Publish @aozi6666/bee-design
         working-directory: packages/components

@@ -34,9 +34,9 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      # 与发布到 npm 一致：先构建 utils，再跑完整组件校验与构建（保证 dist 存在供文档站解析）
-      - name: Build utils & components (release)
-        run: pnpm utils:build && pnpm release
+      # release 已包含 utils:typecheck/build + 组件校验与构建（含 bee-utils CJS 供 Jest、组件 dist 供 Storybook）
+      - name: Release (utils + components)
+        run: pnpm release
 
       # 默认项目站 URL 为 https://<owner>.github.io/<repo>/，需设置 Vite base
       - name: Build Storybook

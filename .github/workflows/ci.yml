@@ -29,10 +29,7 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Utils typecheck & build
-        run: pnpm utils:typecheck && pnpm utils:build
-
-      - name: Components typecheck/test/lint/build
+      - name: Release (utils + components)
         run: pnpm release
 
       - name: Docs build (storybook static)

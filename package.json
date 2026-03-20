@@ -24,7 +24,7 @@
     "turbo:typecheck": "turbo run typecheck",
     "turbo:lint": "turbo run lint",
     "turbo:test": "turbo run test",
-    "release": "pnpm components:typecheck && pnpm components:test:ci && pnpm components:lint && pnpm components:build",
+    "release": "pnpm utils:typecheck && pnpm utils:build && pnpm components:typecheck && pnpm components:test:ci && pnpm components:lint && pnpm components:build",
     "prepare": "husky"
   },
   "lint-staged": {

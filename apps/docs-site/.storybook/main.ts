@@ -8,11 +8,14 @@
 */
 import type { StorybookConfig } from "@storybook/react-vite";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const config: StorybookConfig = {
   stories: [
     "../../../packages/components/src/**/*.stories.@(js|jsx|mjs|ts|tsx)",
-    "../../../packages/components/src/**/*.stories.mdx",
+    "../../../packages/components/src/stories/*.mdx",
   ],
   addons: [
     "@chromatic-com/storybook",

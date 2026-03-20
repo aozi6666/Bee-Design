@@ -1,7 +1,7 @@
 ## Bee Design
 
 React UI Component Library inspired by Honeycomb 🐝  
-一个基于 React + TypeScript 的轻量级组件库，用来演示现代前端工程化（组件开发、单元测试、Storybook、CI 等）实践。
+A lightweight React + TypeScript component library for practicing modern frontend engineering workflows (component development, unit tests, Storybook, and CI).
 
 ### GitHub
 
@@ -12,6 +12,8 @@ React UI Component Library inspired by Honeycomb 🐝
 ```bash
 npm install @aozi6666/bee-design
 # or
+pnpm add @aozi6666/bee-design
+# or
 yarn add @aozi6666/bee-design
 ```
 
@@ -21,7 +23,7 @@ yarn add @aozi6666/bee-design
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { Button } from "@aozi6666/bee-design";
-import "@aozi6666/bee-design/build/index.css";
+import "@aozi6666/bee-design/style.css";
 
 const App = () => (
   <div style={{ padding: 24 }}>
@@ -32,11 +34,11 @@ const App = () => (
 createRoot(document.getElementById("root")!).render(<App />);
 ```
 
-> **提示**：推荐在业务项目中从包入口导入组件（如 `import { Button } from "@aozi6666/bee-design"`）。样式需要在应用入口处引入一次 `@aozi6666/bee-design/build/index.css`。
+> **Tip**: In production apps, import components from the package entry (for example, `import { Button } from "@aozi6666/bee-design"`). Import the stylesheet once at your application entry point: `@aozi6666/bee-design/style.css`.
 
 ```tsx
 import { Button } from "@aozi6666/bee-design";
-import "@aozi6666/bee-design/build/index.css";
+import "@aozi6666/bee-design/style.css";
 
 export default function Demo() {
   return (
@@ -61,65 +63,64 @@ export default function Demo() {
 }
 ```
 
-> **样式说明**：`Button` 的样式来自 `@aozi6666/bee-design/build/index.css`（包含 `.btn`、`.btn-primary`、`.btn-lg` 等类名）。在你的应用入口处引入一次即可。
+> **Style note**: `Button` styles are provided by `@aozi6666/bee-design/style.css` (including classes like `.btn`, `.btn-primary`, and `.btn-lg`). Import it once at your app entry.
 
 ---
 
 ## Features
 
-- **基于 React + TypeScript**：完整的类型定义，开发体验友好。
-- **现代工程化**：使用 Vite 开发体验、本地 Storybook 文档、Jest + Testing Library 单元测试、ESLint 规范代码。
-- **常用基础组件**：涵盖表单、导航、反馈等常见场景。
-- **渐进式学习**：代码中包含一定注释，适合学习组件封装、hooks 抽离以及 TS 类型设计。
+- **React + TypeScript**: Full type definitions and a great developer experience.
+- **Modern engineering workflow**: Vite-powered development, Storybook docs, Jest + Testing Library unit tests, and ESLint for code quality.
+- **Common UI primitives**: Covers form, navigation, feedback, and other everyday UI scenarios.
+- **Learning-friendly**: Inline annotations make it easier to understand component composition, hook extraction, and TypeScript type design.
 
 ---
 
 ## Components
 
-Bee Design 当前提供以下组件（持续扩展中）：
+Bee Design currently provides the following components (growing over time):
 
-- **Button 按钮**
-  - 类型（`btnType`）：`primary` / `default` / `danger` / `link`
-  - 尺寸（`size`）：`lg` / `sm`
-  - `link` 类型支持 `href` / `target`；支持禁用状态等
-- **Input 输入框**
-  - 支持前后缀图标、禁用状态、清空等能力
-- **AutoComplete 自动完成**
-  - 根据输入关键字异步 / 同步返回候选项
-  - 支持自定义下拉项渲染（`renderOption`）
-- **Upload 上传**
-  - 支持点击上传、拖拽上传（`drag`）、上传进度展示、文件列表
-  - 提供原生表单上传示例和 `axios` 上传方式
-- **Menu 菜单**
-  - 水平 / 垂直导航菜单
-  - 支持子菜单展开、选中高亮
-- **Icon 图标**
-  - 基于 Font Awesome 封装
-  - 支持主题颜色、尺寸、旋转动画等
-- **Progress 进度条**
-  - 支持不同主题颜色和高度
-- **Transition 动画**
-  - 对 `react-transition-group` 的简单封装，用于出入场动画
+- **Button**
+  - `btnType`: `primary` / `default` / `danger` / `link`
+  - `size`: `lg` / `sm`
+  - `link` type supports `href` / `target` and disabled states
+- **Input**
+  - Supports prefix/suffix icons, disabled state, and clear behavior
+- **AutoComplete**
+  - Fetches suggestions synchronously or asynchronously based on the input
+  - Supports custom dropdown rendering via `renderOption`
+- **Upload**
+  - Click-to-upload, drag-and-drop (`drag`), progress UI, and file list management
+  - Includes examples for native form upload and `axios`-based upload
+- **Menu**
+  - Horizontal and vertical navigation menus
+  - Supports submenu expansion and active item highlighting
+- **Icon**
+  - Font Awesome–based icon component
+  - Supports themed colors, sizes, and rotation animations
+- **Progress**
+  - Themed variants with configurable height
+- **Transition**
+  - A lightweight wrapper around `react-transition-group` for enter/exit animations
 - **Hooks**
-  - `useClickOutside`：点击组件外区域的处理
-  - `useDebounce`：防抖输入处理
+  - `useClickOutside`: handle clicks outside a component
+  - `useDebounce`: debounce input values
 
-具体用法可以查看 `src/components` 下各个组件的 `*.stories.tsx` 示例和测试用例。
+For usage examples, see component stories and tests under `packages/components/src/components` (for example, `*.stories.tsx`).
 
 ---
 
 ## Usage Example
 
-以 `AutoComplete` 为例：
+Here is an `AutoComplete` example:
 
 ```tsx
 import { useCallback, useState } from "react";
-import AutoComplete, {
-  type DataSourceType,
-} from "@aozi6666/bee-design/build/components/AutoComplete";
-import "@aozi6666/bee-design/build/index.css";
+import { AutoComplete } from "@aozi6666/bee-design";
+import "@aozi6666/bee-design/style.css";
 
-const players: Array<DataSourceType<Record<string, unknown>>> = [
+type Player = { value: string; number: number };
+const players: Player[] = [
   { value: "bradley", number: 11 },
   { value: "james", number: 23 },
   { value: "cook", number: 2 },
@@ -142,7 +143,10 @@ function App() {
 
   return (
     <div style={{ padding: 24 }}>
-      <AutoComplete fetchSuggestions={fetchSuggestions} placeholder="输入湖人队球员英文名试试" />
+      <AutoComplete
+        fetchSuggestions={fetchSuggestions}
+        placeholder="Try typing (e.g. 'ja' or 'co')"
+      />
     </div>
   );
 }
@@ -150,71 +154,78 @@ function App() {
 export default App;
 ```
 
-> **建议**：`fetchSuggestions` 推荐使用 `useCallback` 包裹，避免在父组件重复渲染时创建新函数，从而触发不必要的副作用或额外请求。
+> **Tip**: Wrap `fetchSuggestions` with `useCallback` to avoid creating a new function on every parent re-render, which can trigger unnecessary effects or requests.
 
-更多示例请参考仓库中的 `src/App.tsx` 和 Storybook 故事文件。
+More examples can be found in `packages/components/src/App.tsx` and the Storybook stories.
 
 ---
 
 ## Local Development
 
-克隆仓库：
+### Clone & install
 
 ```bash
 git clone https://github.com/aozi6666/Bee-Design.git
 cd Bee-Design
-npm install
+pnpm install
 ```
 
-本地开发预览：
+### Start the docs site (Storybook)
 
 ```bash
-npm run dev
+pnpm docs:dev
 ```
 
-运行 Storybook：
+### Run unit tests
 
 ```bash
-npm run storybook
+pnpm components:test
 ```
 
-运行单元测试：
+### CI-mode unit tests
 
 ```bash
-npm run test
-# CI 模式（用于 prepublish）
-npm run test:ci
+pnpm components:test:ci
 ```
 
-构建组件库（打包到 `build/` 目录）：
+### Build the component library
 
 ```bash
-npm run build
+pnpm components:build
 ```
 
-发布前检查脚本（测试 + lint + build）：
+This generates build artifacts under `dist/`.
+
+### Pre-release quality checks
 
 ```bash
-npm run prepublishOnly
+pnpm release
 ```
 
 ---
 
 ## Scripts
 
-- **`npm run dev`**: 使用 Vite 启动开发服务器
-- **`npm run build`**: 构建 TypeScript 和样式到 `build/`
-- **`npm run lint`**: 使用 ESLint 检查 `src` 下的代码
-- **`npm run test` / `npm run test:ci`**: 使用 Jest + Testing Library 运行单元测试
-- **`npm run storybook` / `npm run build-storybook`**: 启动或构建 Storybook 文档站点
+- **`pnpm lint`**: Run ESLint across `packages/` and `apps/`
+- **`pnpm stylelint`**: Run Stylelint for CSS/SCSS
+- **`pnpm format` / `pnpm format:check`**: Run Prettier formatting checks
+- **`pnpm docs:dev`**: Start the docs site (Storybook) on port `6006`
+- **`pnpm docs:build`**: Build the docs site (Storybook) for deployment
+- **`pnpm components:test`**: Run component unit tests (Jest)
+- **`pnpm components:test:ci`**: Run unit tests with `CI=true`
+- **`pnpm components:build`**: Build `packages/components` (outputs to `dist/`)
+- **`pnpm turbo:build` / `pnpm turbo:typecheck` / `pnpm turbo:lint` / `pnpm turbo:test`**: Run tasks across the workspace
+- **`pnpm release`**: Pre-release quality checks (typecheck + CI tests + lint + build)
 
 ---
 
 ## Roadmap
 
-- [ ] 完善文档站点与在线 Demo
-- [ ] 增加更多表单组件（`Select` / `Checkbox` / `Radio` 等）
-- [ ] 增加 Layout、Modal 等业务常用组件
-- [ ] 打包为更符合行业习惯的 API 形式（`import { Button } from '@aozi6666/bee-design'`）
+- [ ] Improve the docs site and add an online demo
+- [ ] Add more form components (`Select`, `Checkbox`, `Radio`, etc.)
+- [ ] Add business-friendly UI components (Layout, Modal, etc.)
+- [ ] Refine the public API surface for a more conventional experience (for example, `import { Button } from "@aozi6666/bee-design"`)
 
-欢迎在 GitHub 上提 issue 或 PR，一起完善 Bee Design 🐝。
+## Contributing
+
+Contributions are welcome. Please open an issue or PR, and run `pnpm lint` and `pnpm components:test` before submitting.

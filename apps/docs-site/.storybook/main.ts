@@ -32,6 +32,11 @@ const config: StorybookConfig = {
       new Set([...(viteConfig.server.fs.allow ?? []), workspaceRoot, componentsRoot]),
     );
 
+    const basePath = process.env.STORYBOOK_BASE_PATH?.trim();
+    if (basePath) {
+      viteConfig.base = basePath.endsWith("/") ? basePath : `${basePath}/`;
+    }
+
     return viteConfig;
   },
 };

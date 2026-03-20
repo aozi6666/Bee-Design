@@ -1,0 +1,62 @@
+name: Deploy docs site
+
+# Storybook 静态站 → GitHub Pages（需在仓库 Settings → Pages 中选择 Source: GitHub Actions）
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # 与发布到 npm 一致：先构建 utils，再跑完整组件校验与构建（保证 dist 存在供文档站解析）
+      - name: Build utils & components (release)
+        run: pnpm utils:build && pnpm release
+
+      # 默认项目站 URL 为 https://<owner>.github.io/<repo>/，需设置 Vite base
+      - name: Build Storybook
+        env:
+          STORYBOOK_BASE_PATH: /${{ github.event.repository.name }}/
+        run: pnpm docs:build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/docs-site/storybook-static
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

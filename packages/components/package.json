@@ -1,7 +1,7 @@
 {
   "name": "@aozi6666/bee-design",
   "private": false,
-  "version": "0.2.4",
+  "version": "0.3.1",
   "description": "React UI component library (TypeScript): Button, Menu, Input, Upload, AutoComplete, Icon, Progress, Transition — ESM/CJS/UMD + CSS.",
   "keywords": [
     "react",

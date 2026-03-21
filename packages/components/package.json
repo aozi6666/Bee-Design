@@ -1,7 +1,28 @@
 {
   "name": "@aozi6666/bee-design",
   "private": false,
-  "version": "0.2.3",
+  "version": "0.2.4",
+  "description": "React UI component library (TypeScript): Button, Menu, Input, Upload, AutoComplete, Icon, Progress, Transition — ESM/CJS/UMD + CSS.",
+  "keywords": [
+    "react",
+    "react-components",
+    "ui",
+    "design-system",
+    "typescript",
+    "components",
+    "menu",
+    "upload",
+    "autocomplete",
+    "fontawesome"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aozi6666/Bee-Design.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aozi6666/Bee-Design/issues"
+  },
+  "homepage": "https://github.com/aozi6666/Bee-Design/tree/main/packages/components#readme",
   "type": "module",
   "files": [
     "dist",

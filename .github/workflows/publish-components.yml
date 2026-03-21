@@ -1,3 +1,8 @@
+# 发布需要仓库 Secret，名称必须为：NPM_TOKEN（与下面 secrets.NPM_TOKEN 完全一致）
+# 若名称不同，会出现 ENEEDAUTH。
+# 若账号开启 2FA，必须用可自动发布的 token，否则会报 EOTP（要一次性验证码）：
+#   npm → Access Tokens → Generate New Token → Classic Token → 选「Automation」
+#   （不要用需 2FA 的 Publish / Granular 里未勾选绕过发布的类型）
 name: Publish components
 
 on:
@@ -24,6 +29,20 @@ jobs:
           node-version: 20.x
           cache: pnpm
           registry-url: "https://registry.npmjs.org"
+
+      - name: Ensure NPM_TOKEN is configured
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NPM_TOKEN" ]; then
+            echo "::error::缺少仓库 Secret「NPM_TOKEN」。请到 Settings → Secrets and variables → Actions 新建名称 exactly 为 NPM_TOKEN 的 secret（不要用 NPM_ 随机后缀名），值为 npm Access Token。"
+            exit 1
+          fi
+
+      - name: Write registry auth for pnpm
+        run: echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Install
         run: pnpm install --frozen-lockfile

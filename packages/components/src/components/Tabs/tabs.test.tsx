@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { render, fireEvent, RenderResult } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
 
 import Tabs, { TabsProps } from "./tabs";
 import TabItem from "./tabItem";
@@ -52,5 +52,27 @@ describe("test Tabs Component", () => {
     fireEvent.click(disableElement);
     expect(disableElement).not.toHaveClass("is-active");
     expect(testProps.onSelect).not.toHaveBeenCalled();
+  });
+});
+
+function ControlledTabsHarness() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  return (
+    <Tabs activeIndex={activeIndex} onSelect={setActiveIndex}>
+      <TabItem label="a">A</TabItem>
+      <TabItem label="b">B</TabItem>
+    </Tabs>
+  );
+}
+
+describe("Tabs controlled mode", () => {
+  it("uses activeIndex from parent and updates when parent state changes", () => {
+    const { getByText, queryByText } = render(<ControlledTabsHarness />);
+    expect(getByText("a")).toHaveClass("is-active");
+    expect(queryByText("A")).toBeInTheDocument();
+    fireEvent.click(getByText("b"));
+    expect(getByText("b")).toHaveClass("is-active");
+    expect(queryByText("B")).toBeInTheDocument();
+    expect(queryByText("A")).not.toBeInTheDocument();
   });
 });

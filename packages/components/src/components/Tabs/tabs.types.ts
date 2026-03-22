@@ -7,7 +7,12 @@ import type { ReactElement, ReactNode } from "react";
 export type TabsType = "line" | "card";
 
 export interface TabsProps {
-  /** 当前激活 tab 面板的 index，默认为 0 */
+  /**
+   * 受控：当前激活 tab 的下标。传入后由父组件通过 state 持有，切换时需在 onSelect 里更新。
+   * 不传则为非受控，配合 defaultIndex 使用内部状态。
+   */
+  activeIndex?: number;
+  /** 非受控：初始激活下标，默认为 0 */
   defaultIndex?: number;
   /** 可以扩展的 className */
   className?: string;

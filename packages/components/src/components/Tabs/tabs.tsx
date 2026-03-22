@@ -16,14 +16,30 @@ type TabsWithItem = FC<TabsProps> & { Item: FC<TabItemProps> };
  * ~~~
  */
 const TabsBase: FC<TabsProps> = (props) => {
-  const { defaultIndex = 0, className = "", onSelect, children, type = "line" } = props;
-  const [activeIndex, setActiveIndex] = useState(defaultIndex);
+  const {
+    activeIndex: controlledIndex,
+    defaultIndex = 0,
+    className = "",
+    onSelect,
+    children,
+    type = "line",
+  } = props;
+
+  const isControlled = controlledIndex !== undefined;
+  const [innerIndex, setInnerIndex] = useState(defaultIndex);
+  const activeIndex = isControlled ? controlledIndex : innerIndex;
 
   const handleClick = (index: number, disabled: boolean | undefined) => {
-    if (!disabled) {
-      setActiveIndex(index);
-      onSelect?.(index);
+    if (disabled) {
+      return;
     }
+    if (index === activeIndex) {
+      return;
+    }
+    if (!isControlled) {
+      setInnerIndex(index);
+    }
+    onSelect?.(index);
   };
 
   const navClass = classNames("viking-tabs-nav", {

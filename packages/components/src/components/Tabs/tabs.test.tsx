@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { render, fireEvent, RenderResult } from "@testing-library/react";
+import { render, fireEvent, type RenderResult } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
-import Tabs, { TabsProps } from "./tabs";
+import Tabs, { type TabsProps } from "./tabs";
 import TabItem from "./tabItem";
 
 const testProps: TabsProps = {

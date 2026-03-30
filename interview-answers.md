@@ -1,0 +1,66 @@
+0. 介绍一下 这个React 组件库项目。
+
+【回答】这个项目是一个基于 **React + TypeScript** 的轻量 UI 组件库，仓库采用 **Monorepo** 组织：核心组件包在 `packages/components`（发布为 `@aozi6666/bee-design`），公共工具方法在 `packages/utils`（`@aozi6666/bee-utils`），文档与演示站是独立应用 `apps/docs-site`，通过 `workspace:*` 直接引用组件包，做到“组件实现/文档演示/工具依赖”同仓联动开发。
+
+组件产物层面，`packages/components` 用 **Rollup** 构建并同时输出 **ESM / CJS / UMD**（`dist/index.esm.js`、`dist/index.cjs`、`dist/index.umd.js`），并且单独产出一份全量样式入口 `@aozi6666/bee-design/style.css`（由 `src/styles/index.scss` 汇总各组件 `_style.scss` 后编译到 `dist/index.css`，再通过 `package.json#exports` 暴露）。这样业务侧集成非常明确：**JS 从包入口具名导入，CSS 在入口只引一次**。
+
+API 设计上我尽量把“可控/不可控、UI 与副作用、同步/异步”这些工程问题在组件层解决。比如 `Upload` 以 `action` 承接上传副作用，提供 `beforeUpload`（支持 `boolean`/`Promise<File>`/`false` 阻止）以及 `onProgress/onSuccess/onError/onChange` 等回调把上传生命周期对外暴露，内部用 `fileList + percent/status` 驱动列表 UI；`AutoComplete` 把数据源抽象成 `fetchSuggestions`（同步数组或异步 Promise 都支持），并结合 `useDebounce`、`useClickOutside`、键盘高亮与 `triggerSearch` ref，保证输入体验稳定且不重复请求。像 `Tabs`/`Menu` 这类组件则采用复合组件模式（例如 `Tabs.Item`）来约束使用方式并提升可读性。
+
+工程化上，根目录用 **pnpm + turbo** 编排 `build/typecheck/lint/test`，组件包自带 **Jest + Testing Library** 单测（例如 `*.test.tsx`），文档站用 **Storybook（react-vite）** 承载交互演示和 props 说明（`*.stories.tsx`），并接入 `@storybook/addon-vitest` 做 story 级测试。整体目标是把一个可发布、可文档化、可测试、可持续扩展的组件库工程闭环跑通。
+
+1. 为什么选择 Monorepo 架构来管理组件库？相比多仓库方式有哪些优劣？
+   【回答】该仓库用 `pnpm-workspace.yaml` 统一纳管 `packages/*` 与 `apps/*`，并通过 `turbo.json` 把 `build/typecheck/lint/test` 这类任务在多个包间编排（如组件库产物 `dist/**`、docs 产物 `storybook-static/**`），降低了跨包发布与联调成本。组件库 `packages/components` 依赖 `@aozi6666/bee-utils` 为 `workspace:*`，docs-site 也同样用 `workspace:*` 引用组件库，所以文档与实现始终在同一份依赖与版本下，能保证“改组件马上在 Storybook 看到效果”。相比多仓库，Monorepo 的缺点是耦合与构建复杂度更高，需要通过 `turbo` 缓存/增量与清晰的包边界来控制风险，但在组件库这种“实现+文档+公共工具”高度耦合的场景下收益更大。
+
+2. 你是如何实现组件的按需引入和全量引入的？用了哪些工具或技术？
+   【回答】JS 侧按需主要依赖“树摇友好”的命名导出：`packages/components/src/index.ts` 对每个组件做独立命名导出（如 `export { default as Upload } ...`），打包产物在 `packages/components/package.json#exports` 中提供 ESM/CJS/UMD 条件入口（ESM 对应 `dist/index.esm.js`），现代打包器可对未使用的具名导出进行 tree-shaking，从而实现按需加载。全量使用则是同样的具名导入方式在业务侧同时引用多个组件，并通过样式统一加载：只提供一个 CSS 入口 `@aozi6666/bee-design/style.css`（对应 rollup+sass 产出的 `dist/index.css`），避免每个组件都引入多份样式带来的集成复杂度。
+
+3. 组件库是如何分类和组织的？你怎么保证结构清晰且便于扩展？props 你会从什么角度设计？如果组件下有一个请求（副作用）你会怎么实现？
+   【回答】结构上采用“组件即一个子模块”的组织方式：每个组件目录包含实现（如 `upload.tsx` / `autoComplete.tsx`）、类型文件（`*.types.ts`）、入口（`index.tsx`/命名导出）、Story（`*.stories.tsx`）以及测试（`*.test.tsx`），并在全局 `src/styles/index.scss` 里用 Sass `@use` 统一汇聚已实现组件样式。props 设计会把“UI 状态”与“外部副作用”拆开：以 `Upload` 为例，上传请求以必填 `action` 承接；组件用 `beforeUpload` 既支持同步 `boolean` 也支持异步 `Promise<File>` 或 `false` 阻止上传，同时提供 `onProgress/onSuccess/onError/onChange` 等回调把副作用结果上抛，内部用 `fileList` 驱动 UI。以 `AutoComplete` 为例，请求以 `fetchSuggestions: (str) => DataSourceType[] | Promise<DataSourceType[]>` 抽象，同一个 prop 同时覆盖同步/异步；组件 `useEffect` 分支处理 Promise 并维护 `loading/suggestions/showDropdown`，同时用 `useDebounce` 和 `triggerSearch` ref 避免输入后与“选中回填”导致的重复请求。
+
+4. 目录组织示例
+   【回答】
+
+```text
+Bee-Design/
+  packages/components/
+    src/
+      index.ts                      # 顶层命名导出（Button/Upload/AutoComplete...）
+      styles/index.scss             # 汇聚各组件全局样式（@use .../style as *）
+      components/<ComponentName>/
+        <component>.tsx            # 组件实现
+        <component>.types.ts      # props/data 类型
+        index.tsx                  # 组件入口
+        *.stories.tsx             # Storybook 用例（controls/docs 参数）
+        *.test.tsx                # 单测
+        _style.scss               # 组件样式（Sass 会被 @use ".../style" 解析）
+  apps/docs-site/.storybook/
+    main.ts                         # 指定 stories/MDX 扫描路径（packages/components 的 *.stories）
+    preview.ts                      # 控制面板/辅助功能等 preview 参数
+```
+
+5. 你在实现比如 Upload 或 AutoComplete 这类组件时，遇到过哪些难点？是怎么解决的？
+   【回答】`Upload` 的难点在于“上传请求的副作用”与“列表 UI 状态”的一致性：组件在发起请求前把文件包装成 `{ uid, status, percent }` 放入 `fileList` 立刻渲染列表；请求进度用 axios `onUploadProgress` 计算百分比并同步更新 `fileList`，同时通过 `onProgress` 把进度再通知给外部。另一个关键点是 `beforeUpload` 既要支持 `false` 阻止、又要支持 `Promise<File>` 异步加工后的新文件继续上传，所以内部用分支判断 Promise 并在 resolve 后调用真正的 `post`。`AutoComplete` 的难点则是“同步/异步建议 + 输入体验”：它同时支持 `fetchSuggestions` 返回数组或 Promise，并维护 `loading`/`showDropdown`；为了避免用户选中后回填触发再次搜索，用 `triggerSearch` ref 区分“用户输入触发搜索”与“选中回写不再搜”，再叠加 `useDebounce(300)` 和 `useClickOutside` 实现更稳定的交互。
+
+6. 如何在 Storybook 中实现组件的交互演示和属性说明？有没有做二次封装或者自定义插值？
+   【回答】每个组件都有对应的 `*.stories.tsx`：用 `Meta` 声明 `component`，并通过 `Template: StoryFn = (args) => <Upload {...args} />` 把 `args` 一键映射到 props，配合 `Template.bind({})` 生成不同场景；例如 `Upload` story 里直接用 `children` 组合了 `Button+Icon`，并通过 `docs.source.type="code"` 让文档面板展示源代码。属性说明/实时交互主要靠 Storybook 的 `args/controls` 机制：`.storybook/preview.ts` 设置 `controls.matchers` 来改善控制项类型识别，`AutoComplete` 的“实时效果”也在 story 里用注释体现为联动开发（改组件后 docs-site 立刻看到最新渲染）。自定义插值方面，`AutoComplete` 通过 `renderOption` prop 让下拉项 UI 可由外部决定，故事里用 `renderOption` 展示带自定义字段（如号码）的渲染。
+
+7. Preview 插件的设计原理是什么？它是怎么做到实时预览和代码高亮的？
+   【回答】这里的 “Preview” 实际对应 Storybook 的 preview 配置与 docs 渲染链路：`apps/docs-site/.storybook/main.ts` 使用 `@storybook/react-vite` 构建故事环境，并把组件库的 `*.stories.tsx` 与 `packages/components/src/stories/*.mdx` 作为入口，所以 `storybook dev` 会基于 Vite 实时渲染 React 组件画布（并且能随源码变更刷新，体现在 `AutoComplete` story 的“联动开发”注释）。实时预览方面，`preview.ts` 通过 `parameters.controls` 和 `a11y` 等参数影响 preview 行为，使得 controls 变化能反映到组件 props。代码高亮方面，多个 story 的 `parameters.docs.source.type="code"` 指定以 code 形式展示源码，且 `main.ts` 已启用 `@storybook/addon-docs`，因此 docs 面板会把 story 的示例代码按 Storybook 文档系统进行渲染与高亮；同时配合 `@storybook/addon-vitest`/`vitest` 进行交互测试，保证展示逻辑与可测性一致。
+
+8. ESLint、Prettier、Husky、lint-staged 是如何集成在 CI 流程中的？这些工具分别解决了哪些问题？
+   【回答】本地用 Husky + lint-staged 做“提交前快速校验”：根目录 `package.json` 里有 `prepare: husky`，并在 `.husky/pre-commit` 执行 `pnpm lint:staged`；`lint-staged` 的配置直接在根 `package.json` 中（对 `js/ts/tsx` 跑 `eslint --fix + prettier --write`，对 `css/scss` 跑 `stylelint --fix + prettier --write`，对 `md/yml/json` 只跑 `prettier --write`），只处理暂存区变更，降低开发打断。CI 方面，`ci.yml`/`deploy-docs.yml` 在安装依赖时设置 `HUSKY: "0"`，让 CI 跳过 Husky 的 hook 触发；随后用 `pnpm release`（以及 docs 构建）跑全量质量流程：`utils:typecheck + utils:build`、`components:test:ci`、`components:lint`（eslint）和 `components:build`。因此 lint-staged/Prettier 的“格式兜底”主要发生在提交前，而 CI 保证的是“全量可验证性”（typecheck/test/lint/build）。
+
+9. Jest 单元测试中是如何设计用例的？主要测试哪些场景？有没有遇到过异步交互这类问题？
+   【回答】用例设计围绕“组件行为状态机 + 交互路径”来写。`AutoComplete`：用 `testArray` 驱动同步建议渲染，断言输入后下拉列表 DOM 数量/点击选中（`onSelect`）、键盘上下选择（`is-active` 类切换）、以及点击文档外部隐藏下拉；同时单独写了 `fetchSuggestions` 返回 Promise 的异步用例，确保能等到数据后再断言渲染结果。`Upload`：mock `axios.post`，覆盖普通上传与拖拽上传两条路径，断言文件选择后隐藏 file input、上传中 UI（spinner/状态）、上传成功后列表项与回调（`onSuccess/onChange`）、以及删除文件触发 `onRemove`。`Tabs`：覆盖默认激活 tab、点击切换内容/回调、以及 disabled tab 不触发 `onSelect`。整体上异步交互主要通过 `waitFor` 等待 Promise 与状态更新完成来保证稳定断言。
+
+10. 组件库是否做了版本管理与发布？如何发布到 npm？如何处理依赖更新问题？
+    【回答】版本由包自身 `package.json` 管理：例如 `packages/components/package.json` 当前版本 `0.3.1`，并通过 `prepublishOnly: pnpm release` 约束发布前必须跑完 `typecheck/test/lint/build`。发布动作由 GitHub Actions 走 tag 触发：`.github/workflows/publish-components.yml` 在 `push tags: components-v*` 时运行，先 `pnpm release` 验证构建，再在 `packages/components` 下执行 `pnpm publish --no-git-checks --access public`（通过 `NPM_TOKEN` 注入）。依赖更新上，组件包以 `@aozi6666/bee-utils` 作为独立包依赖（开发用 `workspace:*`，打包时 rollup 也把它标为 external），因此更新策略就是：先把 utils 包按新版本发布/可解析，再发布组件包，让消费者在运行时拿到正确的 utils 版本。
+
+11. 有没有设计“主题化”或“国际化”功能？如果要支持多语言/多主题扩展怎么做？
+    【回答】主题化目前在组件层通过 `theme` prop 实现：`Icon` 的 `IconProps` 定义了 `ThemeProps`，组件内根据 `theme` 生成 `icon-${theme}` 类；`Progress` 同样通过 `theme` 生成 `color-${theme}` 并在样式里落到不同视觉效果。国际化方面，仓库没有引入 i18n 框架；组件的文案/占位通常由调用方通过 `children` 或 `props` 传入（例如 `Upload` 直接渲染 `children`，`AutoComplete` 把剩余 props 透传给 `Input`，因此 placeholder 等展示文本可以由上层翻译并传入）。如果要扩展多语言，建议把组件内部潜在硬编码文案全部外置，并提供 `locale/t`（或直接让调用方传入字符串/renderOption）这种“由外部提供语言资源”的机制，同时用 Storybook/测试分别覆盖不同语言输入。
+
+12. 使用 `pnpm workspace` 时，是否遇到依赖冲突或包引入异常？是怎么处理的？
+    【回答】代码层面我主要通过“声明 peer + 打包外置 + 测试映射”来规避重复实例/依赖分身：`packages/components` 把 `react/react-dom` 放到 `peerDependencies`；`packages/components/rollup/rollup.config.js` 的 `external` 里也把 `react/react-dom`、以及 `@aozi6666/bee-utils` 等排除，避免把多份依赖打进产物；在 Jest 配置里用 `moduleNameMapper` 把 `@aozi6666/bee-utils` 映射到本仓 `../utils/dist/cjs/index.js`，保证测试时引用的是同一份产物。需要更新依赖时也是用 `pnpm` 锁文件（CI 里 `pnpm install --frozen-lockfile`）确保 workspace 内部版本一致；如果业务出现冲突，通常优先同步 `bee-utils` 版本并重跑 lockfile，而不是在组件产物里硬编码解决。
+
+13. 你是否做过组件性能优化？比如渲染优化、虚拟滚动、懒加载等？
+    【回答】当前源码里有明显的“减少无谓更新/降低交互频率”优化：`Input` 用 `useMemo` 仅在 `size/prepend/append` 变化时重算 classNames；`AutoComplete` 对输入做了 `useDebounce(300)`，用 `triggerSearch` ref 区分“用户输入搜索”与“选中回填不再触发请求”，并在 effect 里处理 Promise/同步结果以避免额外状态抖动；下拉展开/关闭使用 `useClickOutside` 及时清理 suggestions。`Upload` 通过 `fileList` 的按 uid 更新（`map`/`filter`）来保证只更新受影响条目，并利用 axios `onUploadProgress` 实时驱动进度状态。仓库目前没有做 `react-window`/`虚拟滚动` 或 `React.lazy/Suspense` 这种懒加载；如果未来 suggestions/fileList 很大，下一步通常就是对下拉列表/文件列表做虚拟化或分页渲染，并把数据拉取继续按需化。

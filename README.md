@@ -1,7 +1,42 @@
-## Bee Design
+# Bee Design 🚀
 
-React UI Component Library inspired by Honeycomb 🐝  
-A lightweight React + TypeScript component library for practicing modern frontend engineering workflows (component development, unit tests, Storybook, and CI).
+A React + TypeScript component library that delivers high-quality, reusable UI components. It supports on-demand loading and provides a smooth developer experience.
+
+✨ Features:
+
+- 🧱 Monorepo setup (pnpm + Turborepo)
+- ⚡ On-demand loading support
+- 🎨 Customizable theming
+- 📦 Highly reusable component design
+- 📚 Documentation & live stories (docs-site)
+
+👉 Demo: https://aozi6666.github.io/Bee-Design/?path=/story/example-button--primary
+👉 Docs: https://aozi6666.github.io/Bee-Design/?path=/story/welcome--introduction
+
+---
+
+### 3️⃣ Tech Stack
+
+React
+
+- TypeScript
+- pnpm workspace (Monorepo)
+- Turborepo (build acceleration)
+- ESLint + Prettier + Stylelint
+- Husky + lint-staged (code quality)
+
+---
+
+### Project Structure
+
+```text
+├── apps
+│   └── docs-site     # Storybook documentation site
+├── packages          # Component library core packages
+├── public
+├── .husky            # Git hooks
+├── .turbo            # Turborepo build cache
+```
 
 ### GitHub
 
@@ -69,10 +104,10 @@ export default function Demo() {
 
 ## Features
 
-- **React + TypeScript**: Full type definitions and a great developer experience.
-- **Modern engineering workflow**: Vite-powered development, Storybook docs, Jest + Testing Library unit tests, and ESLint for code quality.
-- **Common UI primitives**: Covers form, navigation, feedback, and other everyday UI scenarios.
-- **Learning-friendly**: Inline annotations make it easier to understand component composition, hook extraction, and TypeScript type design.
+- **Monorepo architecture**: pnpm + Turborepo orchestrates packages and the docs-site together.
+- **On-demand loading**: named exports for tree-shaking friendly usage and a single style entry (`@aozi6666/bee-design/style.css`).
+- **Theme-ready UI**: shared styles and configurable variants for consistent customization.
+- **Documented & tested**: Storybook stories + unit tests + CI quality checks.
 
 ---
 

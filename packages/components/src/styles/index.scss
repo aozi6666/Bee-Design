@@ -13,9 +13,9 @@
 // 下面这些组件样式暂时还没实现，等写到对应组件时再打开
 // @use "../components/Alert/style";
 // @use "../components/Menu/style";
-// @use "../components/Tabs/style";
+@use "../components/Tabs/style";
 @use "../components/Input/style" as *;
+@use "../components/AutoComplete/style";
 
-// @use "../components/AutoComplete/style";
 // @use "../components/Select/style";
 // @use "../components/Form/style";

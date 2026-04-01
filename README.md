@@ -195,6 +195,25 @@ More examples can be found in `packages/components/src/App.tsx` and the Storyboo
 
 ---
 
+## i18n (Internationalization)
+
+Bee Design provides a lightweight `ConfigProvider` with built-in locale packs. Default locale is **`zh-CN`**.
+
+```tsx
+import { ConfigProvider, enUS, Upload } from "@aozi6666/bee-design";
+import "@aozi6666/bee-design/style.css";
+
+export default function App() {
+  return (
+    <ConfigProvider locale={enUS}>
+      <Upload action="https://jsonplaceholder.typicode.com/posts">
+        <button>Upload</button>
+      </Upload>
+    </ConfigProvider>
+  );
+}
+```
+
 ## Local Development
 
 ### Clone & install

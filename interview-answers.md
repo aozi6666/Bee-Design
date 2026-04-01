@@ -64,3 +64,104 @@ Bee-Design/
 
 13. 你是否做过组件性能优化？比如渲染优化、虚拟滚动、懒加载等？
     【回答】当前源码里有明显的“减少无谓更新/降低交互频率”优化：`Input` 用 `useMemo` 仅在 `size/prepend/append` 变化时重算 classNames；`AutoComplete` 对输入做了 `useDebounce(300)`，用 `triggerSearch` ref 区分“用户输入搜索”与“选中回填不再触发请求”，并在 effect 里处理 Promise/同步结果以避免额外状态抖动；下拉展开/关闭使用 `useClickOutside` 及时清理 suggestions。`Upload` 通过 `fileList` 的按 uid 更新（`map`/`filter`）来保证只更新受影响条目，并利用 axios `onUploadProgress` 实时驱动进度状态。仓库目前没有做 `react-window`/`虚拟滚动` 或 `React.lazy/Suspense` 这种懒加载；如果未来 suggestions/fileList 很大，下一步通常就是对下拉列表/文件列表做虚拟化或分页渲染，并把数据拉取继续按需化。
+14. 你在实现比如 Upload 这类组件时，遇到过哪些难点？是怎么解决的？
+    【回答】这个项目里 `Upload` 的核心难点不是“发一个请求”，而是把 **文件上传生命周期**（ready/uploading/success/error）和 React 列表 UI 严格对齐，保证外部回调拿到的数据与界面一致。源码里我主要解决了几类问题：
+    1. **上传前拦截的分支复杂度（`beforeUpload`）**  
+       `beforeUpload` 支持三种结果：不传（直接上传）、返回 `false`（阻止上传）、返回 `Promise<File>`（异步处理后再上传）。实现上统一收敛在 `uploadFiles` 里：先拿到 `result`，如果是 Promise 就 `then(processedFile => post(processedFile))`，如果是非 `false` 就 `post(file)`，从而把“同步/异步/中断”三条路径都覆盖，避免漏掉异步处理后的文件上传。
+
+    2. **进度、状态、回调三者一致性**  
+       上传过程里最容易出问题的是“UI 显示一个状态，回调拿到另一个状态”。我的做法是先把原生 `File` 包装成内部 `UploadFile`（含 `uid/status/percent/raw`）并立刻放入 `fileList`，然后在 axios `onUploadProgress` 里通过 `updateFileList` 按 `uid` 精准更新，同时同步修改当前 `_file` 对象，再触发 `onProgress`。成功/失败分支同样先更新内部 state，再更新 `_file`，最后触发 `onSuccess/onError/onChange`，确保外部消费到的是最新状态。
+
+    3. **点击上传与拖拽上传双入口复用**  
+       这版实现把拖拽逻辑拆到 `Dragger` 子组件，只负责拖拽态样式和 `drop` 时拿 `FileList`，真正上传仍复用父组件的 `uploadFiles`。这样“普通选择文件”和“拖拽放下文件”共用一套上传状态机与回调链路，减少分叉实现导致的不一致。
+
+    4. **同一列表项的精准更新与删除**  
+       多文件场景下如果不做标识，状态会串。这里每个文件都生成 `uid`，`updateFileList` 用 `map` 定位同一项做局部更新，删除用 `filter` 移除对应 `uid`，并在删除后触发 `onRemove`。这样可以保证文件状态隔离，避免一个文件的进度影响另一个文件。
+
+    5. **输入控件可重复选择同名文件**  
+       浏览器原生 `input[type=file]` 如果不重置 value，连续选择同一个文件可能不触发 `change`。源码在 `handleFileChange` 末尾主动把 `fileInput.current.value = ""`，保证后续重复选择也能进入上传流程。
+
+    另外从测试上也做了兜底：`upload.test.tsx` 用 mock axios 覆盖了普通上传和拖拽上传两条路径，并验证了 `onSuccess/onChange/onRemove` 的调用与列表状态变化，确保这套状态机在交互上是可回归的。
+
+15. 你在实现比如 AutoComplete 这类组件时，遇到过哪些难点？是怎么解决的？
+    【回答】这个项目里 `AutoComplete` 的难点集中在 **输入状态、下拉展示、异步请求** 三者的时序与边界处理，避免“闪烁/重复请求/键盘选中错乱”。源码里主要做了这些收敛：
+    1. **输入与下拉状态同步（show/hide 的边界）**  
+       我把“是否展示下拉”抽成 `showDropdown`，并把点击外部关闭做成通用 hook：`useClickOutside(componentRef, ...)`，一旦点到组件外就清空 `suggestions` 并关闭下拉，避免下拉残留。键盘按 `Esc` 也会直接关闭下拉框，保证行为一致。
+
+    2. **防抖 + 统一同步/异步数据源**  
+       `fetchSuggestions` 被抽象成既支持 `DataSourceType[]` 也支持 `Promise<DataSourceType[]>`。输入变化先走 `useDebounce(inputValue, 300)`，防止每个 keystroke 都触发一次搜索；在 effect 中对 Promise/非 Promise 分支分别维护 `loading/suggestions/showDropdown`，异步时先开 `loading`，resolve 后再落 `suggestions` 并按 `data.length > 0` 决定是否展示下拉。
+
+    3. **避免“选中回填”导致的二次搜索（请求竞态的一个来源）**  
+       用户点选或回车选中后会把输入框值改成选中项的 `item.value`，如果不区分来源，这次 setState 会再次触发搜索。源码用 `triggerSearch` 这个 ref 把“用户打字触发搜索”(true) 与“选中回填不再搜索”(false) 分开：`handleChange` 里置 true，`handleSelect` 里置 false；effect 里如果 `!triggerSearch.current` 直接关闭下拉并重置高亮，从根上避免重复请求/下拉闪回。
+
+    4. **键盘可访问性与高亮索引越界**  
+       键盘上下移动用 `highlightIndex` 驱动，并通过 `clamp(index, 0, suggestions.length - 1)` 把索引限制在合法区间，避免 suggestions 长度变化时出现越界；回车（keyCode 13）只在当前高亮项存在时才触发选择，保证键盘路径稳定。
+
+    5. **渲染扩展性：自定义下拉项 UI**  
+       下拉项不强绑固定模板，而是提供 `renderOption`：如果外部传了就用它渲染，否则默认渲染 `item.value`。这让组件可以在不改内部逻辑的情况下扩展展示内容（测试里也覆盖了自定义渲染）。
+
+    测试层面 `autoComplete.test.tsx` 覆盖了同步建议、键盘选择、点击外部关闭、`renderOption` 自定义渲染，以及 `fetchSuggestions` 返回 Promise 的异步场景，用 `waitFor` 保证异步更新后再断言，减少 flaky。
+
+16. 组件的 props 类型定义是如何做的？有没有用到泛型或联合类型？
+    【回答】我在这个组件库里做 props 类型设计时，核心目标是 **“在类型层把组件的使用约束表达清楚”**，同时尽量复用 React/第三方库已有的 DOM/组件类型，减少重复定义。源码里主要用到了这些手段：
+    1. **联合类型（Union）表达“枚举型 props”**  
+       比如 `UploadFileStatus = "ready" | "uploading" | "success" | "error"`（`Upload` 的状态机），`ThemeProps`（`Icon` 的主题色）、`TabsType = "line" | "card"`、`AnimationName = "zoom-in-top" | ...` 等，都是用字符串字面量联合类型把可选值收紧，避免随便传 string 导致样式/分支漏覆盖。
+
+    2. **泛型 + 交叉类型（Intersection）让数据源可扩展**  
+       `AutoComplete` 的建议项用 `DataSourceType<T = Record<string, unknown>> = T & { value: string }`：强制每个 item 至少有 `value`，但又允许业务在 item 上拼更多字段（如测试里 `number`），并且 `renderOption` 可以按扩展字段自定义渲染。这是组件库里比较典型的“泛型扩展点”。
+
+    3. **继承原生属性，并用 Omit 做“冲突字段裁剪”**  
+       例如 `InputProps extends Omit<InputHTMLAttributes<HTMLElement>, "size">`：既继承了原生 input 的绝大多数属性，又避免与组件自定义的 `size?: "lg" | "sm"` 冲突；`AutoCompleteProps` 则 `extends Omit<InputProps, "onSelect" | "onChange">`，把 Input 的 `onChange`（事件签名）替换成更符合 AutoComplete 语义的 `onChange?: (value: string) => void`，避免外部拿到事件对象再自行拆值。
+
+    4. **用 as const + typeof/keyof 生成稳定的字面量类型**  
+       `Button` 的 size/type 不是手写 `"lg" | "sm"`，而是定义常量对象 `ButtonSize/ButtonType as const`，再用 `(typeof ButtonSize)[keyof typeof ButtonSize]` 推导出 `"lg" | "sm"` 这类联合类型。这样新增枚举值只改一处常量，类型会自动同步，减少维护成本。
+
+    5. **工具类型组合：Partial / NonNullable 等**  
+       `ButtonProps` 最终用了 `Partial<NativeButtonProps & AnchorButtonProps>` 来放宽可选性，便于同一组件既能渲染 `<button>` 也能渲染 `<a>` 的场景；`TransitionProps` 用 `Omit<CSSTransitionProps, "timeout"> & { timeout: NonNullable<...> }` 把第三方类型里的关键字段收紧为必填，避免调用方漏传导致运行时异常。
+
+    总体上，这套类型策略就是：**用联合类型约束分支、用泛型承载可扩展数据、用 Omit/交叉类型复用并改造原生/第三方 props**，让组件在“灵活”和“可用性/可维护性”之间取得平衡。
+
+17. 如何保证组件在多种场景下的可复用性和扩展性？有没有做 slots、render props 或 context 的封装？
+    【回答】这套组件库里我主要用三种方式做“可复用/可扩展”，并且都能在源码里看到对应落地：
+    1. **slots（用 `children` 做内容插槽 / 组合）**  
+       很多组件把“外观内容”交给外部，通过 `children` 组合完成：例如 `Upload` 不内置按钮样式，而是渲染外部传入的 `children`（可以是文本、Button、Icon 组合），从而同一上传逻辑可以适配不同 UI；`Dragger` 也是把拖拽区域内部的内容完全交给 `children`，只负责拖拽交互与样式态。
+
+    2. **render props（把“局部渲染策略”开放出来）**  
+       `AutoComplete` 的下拉项渲染通过 `renderOption?: (item) => ReactElement` 扩展：默认渲染 `item.value`，但业务可以在不改组件内部逻辑的前提下自定义每一项的模板（比如展示更多字段）。这种方式能保证核心交互（防抖、键盘选择、点击外部关闭）稳定，同时把“展示差异”留给调用方。
+
+    3. **Context + 复合组件模式（compound components）约束结构并共享状态**  
+       `Menu` 里用 `MenuContext.Provider` 下发 `index/onSelect/mode/defaultOpenSubMenus`，`MenuItem/SubMenu` 通过 `useContext` 获取当前激活项与选择回调，实现“父组件管理状态、子组件消费状态”的解耦；同时 `Menu` 会在渲染子节点时校验 `displayName`，只允许 `MenuItem/SubMenu` 作为直接子节点，并用 `cloneElement` 注入 `index`，避免使用者随意嵌套导致状态丢失。  
+       `Tabs` 则用 `Tabs.Item` 的复合组件暴露统一的使用形态，并且同时支持 **受控/非受控**（`activeIndex` vs `defaultIndex + innerIndex`），让它既能简单用、也能在复杂页面里由上层统一管理状态。
+
+    总结下来：**结构用复合组件收敛、状态用 Context/受控模式共享、局部 UI 用 children/render props 打开**，这样同一个组件能覆盖更多业务形态，同时内部逻辑仍然可维护、可测试。
+
+18. 组件的样式是怎么写的？用了哪种 CSS 方案（如 CSS Modules、Tailwind、css-in-js）？为什么选它？
+    【回答】这个项目里组件样式采用的是 **Sass/SCSS（非 CSS Modules、非 Tailwind、非 css-in-js）**，并且在构建阶段把所有样式编译成一份可直接引入的全量 CSS。
+    1. **样式组织方式：全局入口 + 组件级 `_style.scss`**  
+       `packages/components/src/styles/index.scss` 是样式总入口，使用 Sass 新模块系统 `@use` 引入全局基础（`_variables.scss`/`_mixin.scss`/`_reboot.scss`/`_animation.scss`）以及各组件的 `style`（每个组件目录下的 `_style.scss`）。组件侧普遍采用带前缀的 class（如 `.viking-upload-list`、`.viking-input-inner`）来降低全局污染风险。
+
+    2. **设计 token 与复用：变量 + mixin**  
+       `_variables.scss` 定义了颜色、字号、间距、组件级 token（Button/Input/Menu/Progress 等），风格上类似 Bootstrap 的 token 分层；`_mixin.scss` 把按钮尺寸/状态、动画等重复规则抽成 `@mixin`（例如 `button-style`、`zoom-animation`），各组件 `@include` 复用，减少重复与不一致。
+
+    3. **产物与接入方式：编译为单一 CSS 出口**  
+       组件包的 `build:css` 脚本直接跑 `sass src/styles/index.scss dist/index.css`，并在 `package.json#exports` 暴露 `./style.css -> ./dist/index.css`。业务侧只需要引一次 `@aozi6666/bee-design/style.css` 就能拿到全量样式，集成成本更低、也便于 Storybook/演示站统一加载。
+
+    4. **为什么不用 CSS Modules / Tailwind / css-in-js（就当前项目取舍）**  
+       这版更偏“组件库通用产物”的思路：输出一份稳定的全量 CSS，搭配 token/mixin 做一致性；不引入运行时样式依赖（css-in-js），也不增加使用侧的构建约束（Tailwind/按需生成）。同时通过 class 前缀 + 统一入口来控制维护成本。
+
+19. 你有没有设计“主题化”或“国际化”功能？如果需要支持换肤或多语言，该怎么扩展组件架构？
+    【回答】就当前源码来看，**主题化是有基础能力的，国际化还没做成框架级方案**。
+    1. **现状：主题化已有“轻量实现”**  
+       组件里已经有主题语义的入口：例如 `Icon` 的 `theme`（`primary/success/danger...`）和 `Progress` 的 `theme`，样式侧通过 `_variables.scss` 的 `$theme-colors` 映射生成对应 class（如 `.color-primary`）。这说明项目已经有“语义色 token -> 组件视觉”的基础链路。
+
+    2. **现状：国际化以“外部传文案”为主**  
+       目前没有内置 i18n provider 或语言包系统，组件更多通过 `children/placeholder/renderOption` 等方式接收调用方传入文本；像 `Upload`、`AutoComplete` 这类组件，业务可以在外层先做翻译，再把字符串传给组件。
+
+    3. **如果扩展换肤：建议走“token 分层 + CSS Variables”**  
+       现在是 SCSS 变量在构建期固化，如果要做运行时换肤，可以把核心语义 token（主色、成功色、边框、文字、背景）下沉为 CSS 自定义属性（`--bee-color-primary` 这类），组件样式改为优先读取 CSS 变量；同时保留当前 SCSS token 作为默认值。这样既兼容现有产物，又支持业务在运行时按 `[data-theme]` 或根节点 class 切换主题。
+
+    4. **如果扩展国际化：建议加 ConfigProvider/LocaleProvider**  
+       可以新增一个顶层配置容器（例如 `ConfigProvider`），提供 `locale` 和可选 `t(key, params)`；组件内部只消费语义化文案 key（如 empty/loading/uploading），默认内置 `zh-CN/en-US` 两套 locale。对外仍保留“props 文案优先级最高”的覆盖能力，避免破坏现有用法。
+
+    5. **架构边界建议**  
+       组件库层只负责“文案 key + 默认语言包 + 主题 token 协议”，不耦合具体业务 i18n 框架；业务层如果已经使用 `i18next/react-intl`，可以通过 provider 或 props 映射接入。这样扩展性更好，也能保持组件库本身轻量。

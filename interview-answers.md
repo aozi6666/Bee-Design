@@ -150,18 +150,18 @@ Bee-Design/
        这版更偏“组件库通用产物”的思路：输出一份稳定的全量 CSS，搭配 token/mixin 做一致性；不引入运行时样式依赖（css-in-js），也不增加使用侧的构建约束（Tailwind/按需生成）。同时通过 class 前缀 + 统一入口来控制维护成本。
 
 19. 你有没有设计“主题化”或“国际化”功能？如果需要支持换肤或多语言，该怎么扩展组件架构？
-    【回答】就当前源码来看，**主题化是有基础能力的，国际化还没做成框架级方案**。
-    1. **现状：主题化已有“轻量实现”**  
-       组件里已经有主题语义的入口：例如 `Icon` 的 `theme`（`primary/success/danger...`）和 `Progress` 的 `theme`，样式侧通过 `_variables.scss` 的 `$theme-colors` 映射生成对应 class（如 `.color-primary`）。这说明项目已经有“语义色 token -> 组件视觉”的基础链路。
+    【回答】就当前源码来看，**主题化有基础能力，国际化也已经有了“全局配置 + 语言包 + hook”这一套最小闭环**。
+    1. **现状：主题化已有“语义化 token -> 样式类”链路**  
+       组件里有主题语义入口：例如 `Icon`/`Progress` 的 `theme`（`primary/success/danger...`），样式侧通过 `_variables.scss` 的 `$theme-colors` 批量生成主题类（如 `.color-primary`）。这让颜色体系可统一演进，而不是在组件里写死具体色值。
 
-    2. **现状：国际化以“外部传文案”为主**  
-       目前没有内置 i18n provider 或语言包系统，组件更多通过 `children/placeholder/renderOption` 等方式接收调用方传入文本；像 `Upload`、`AutoComplete` 这类组件，业务可以在外层先做翻译，再把字符串传给组件。
+    2. **现状：国际化已提供 ConfigProvider（默认 zh-CN）**  
+       你现在实现了 `ConfigProvider`：内部以 `zhCN` 为默认 locale，并用 `deepMerge(zhCN, locale)` 把调用方传入的局部文案覆盖到默认文案上；同时提供了 `useLocale()` 从 `BeeConfigContext` 读取当前 locale。测试里也覆盖了“默认 zh-CN / 自定义覆盖 / 切换到内置 enUS”三种路径，说明国际化能力已可用且可回归。
 
-    3. **如果扩展换肤：建议走“token 分层 + CSS Variables”**  
-       现在是 SCSS 变量在构建期固化，如果要做运行时换肤，可以把核心语义 token（主色、成功色、边框、文字、背景）下沉为 CSS 自定义属性（`--bee-color-primary` 这类），组件样式改为优先读取 CSS 变量；同时保留当前 SCSS token 作为默认值。这样既兼容现有产物，又支持业务在运行时按 `[data-theme]` 或根节点 class 切换主题。
+    3. **对外 API 形态：包入口已导出**  
+       `ConfigProvider`、`useLocale`、内置 `zhCN/enUS` 以及 `BeeLocale/ConfigProviderProps` 都从组件库入口导出，业务侧可以直接包裹 Provider 并按需切换/覆写。
 
-    4. **如果扩展国际化：建议加 ConfigProvider/LocaleProvider**  
-       可以新增一个顶层配置容器（例如 `ConfigProvider`），提供 `locale` 和可选 `t(key, params)`；组件内部只消费语义化文案 key（如 empty/loading/uploading），默认内置 `zh-CN/en-US` 两套 locale。对外仍保留“props 文案优先级最高”的覆盖能力，避免破坏现有用法。
+    4. **如果扩展换肤：建议走“token 分层 + CSS Variables”**  
+       当前 token 主要是 SCSS 构建期固化；如果要支持运行时换肤，可以把核心语义 token 下沉为 CSS 自定义属性（如 `--bee-color-primary`），组件样式优先读取 CSS 变量，并保留现有 SCSS 默认值，实现“默认主题零成本 + 运行时可切换”。
 
     5. **架构边界建议**  
-       组件库层只负责“文案 key + 默认语言包 + 主题 token 协议”，不耦合具体业务 i18n 框架；业务层如果已经使用 `i18next/react-intl`，可以通过 provider 或 props 映射接入。这样扩展性更好，也能保持组件库本身轻量。
+       组件库层做“默认语言包 + 合并策略 + hook/上下文 + 主题 token 协议”，避免强绑定业务侧的 i18n 体系；业务若已使用 `i18next/react-intl`，可以在上层把翻译结果映射到 `locale` 传入 `ConfigProvider`，保持解耦。

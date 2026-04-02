@@ -1,20 +1,33 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+# 创建 OpenSpec 产物（proposal / design / specs / tasks）时注入给 AI 的项目背景。
+# 更完整的目录与命令见：docs/架构说明.md
+context: |
+  仓库：Cream_Design（pnpm workspace，根包名 bee-design-workspace，packageManager: pnpm@9.15.9）。
+  技术栈：TypeScript 5.9、React 18/19（组件库 peer）、Vite 7（Storybook）。
+  Monorepo 包：
+    - packages/utils → npm @aozi6666/bee-utils（工具：clamp、pick/omit、DOM/React 辅助）；构建 tsc（ESM+CJS）。
+    - packages/components → npm @aozi6666/bee-design（UI 组件 + ConfigProvider/i18n）；workspace 依赖 bee-utils；构建 Rollup（ESM/CJS/UMD）+ Sass → dist/index.css；exports 含 ./style.css。
+    - apps/docs-site → @bee-design/docs-site，Storybook 10 + Vite，依赖 workspace 组件包。
+  依赖方向：utils ← components ← docs-site；禁止 utils 依赖 components。
+  编排：Turborepo（turbo.json）— build/typecheck/lint/test 对上游任务使用 ^ 依赖。
+  常用命令（根目录）：pnpm components:build | components:test | components:typecheck | utils:build | utils:typecheck | docs:dev | docs:build | turbo:* | release | format。
+  测试：packages/components 用 Jest + ts-jest + Testing Library（jsdom）；docs-site 可用 vitest + Playwright（test:storybook）。
+  质量：ESLint（TS/React）、Stylelint（scss/css）、Prettier、husky、lint-staged、commitlint（conventional）。
+  OpenSpec：openspec/config.yaml 本文件；变更目录 openspec/changes/<name>/；工作流 propose → apply → archive。
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+rules:
+  proposal:
+    - 涉及多包或公开 API 时，在 Impact 中点名 packages/utils、packages/components、apps/docs-site 中哪些目录/导出会受影响。
+    - 若变更组件对外 exports、peerDependencies 或 CSS 入口，必须标注是否为 BREAKING，并说明迁移提示。
+    - 结构性改动（新 workspace 包、构建链切换）时，tasks 中需包含同步更新 docs/架构说明.md 或写明不更新的理由。
+    - Capabilities 中的名称使用 kebab-case；新建能力对应 specs/<name>/spec.md。
+  specs:
+    - 需求与场景须符合本仓库 OpenSpec schema：### Requirement 与 #### Scenario，场景正文使用 **WHEN** / **THEN**（不要用三级标题写 Scenario）。
+    - 与 UI 相关的能力需覆盖可访问性或与现有 Storybook 文档/Stories 的验证关系（如适用）。
+  design:
+    - 跨包引用、Rollup 分包、或新增/升级 npm 依赖时，说明对 bundle 体积与 peer 依赖的影响。
+    - 组件交互复杂（如 Menu、Upload、AutoComplete）时，优先补充简要流程说明（可用步骤列表；复杂时可用序列图、mermaid）。
+  tasks:
+    - 任务使用 - [ ] / - [x] 勾选格式；按依赖排序；单条任务应在一个工作会话内可完成。
+    - 涉及组件实现时，包含或引用对应测试（Jest）与必要时的 Storybook 更新。

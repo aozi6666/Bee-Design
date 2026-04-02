@@ -13,6 +13,12 @@ export interface UploadFile {
   raw?: File;
   response?: unknown;
   error?: unknown;
+  /** 分片上传时的上传标识（用于服务端归组） */
+  uploadId?: string;
+  /** 分片总数（可用于调试/服务端配合） */
+  totalChunks?: number;
+  /** 是否处于分片上传路径（标识用，不影响 UI 展示） */
+  chunked?: boolean;
 }
 
 export interface UploadProps {
@@ -20,6 +26,16 @@ export interface UploadProps {
   action: string;
   /** 上传的文件列表 */
   defaultFileList?: UploadFile[];
+  /** 上传的文件列表（受控：由父组件传入并管理） */
+  fileList?: UploadFile[];
+  /** 文件列表变更回调（受控模式下建议使用） */
+  onFileListChange?: (fileList: UploadFile[]) => void;
+  /** 是否启用分片上传能力 */
+  enableChunkUpload?: boolean;
+  /** 单个分片大小（字节），大于 0 才会启用分片 */
+  chunkSize?: number;
+  /** 单个 chunk 上传失败后的重试次数（不含首次尝试） */
+  chunkRetryCount?: number;
   /** 上传文件之前的钩子，返回 false 或 Promise 可以阻止上传 */
   beforeUpload?: (file: File) => boolean | Promise<File>;
   /** 文件上传时的钩子 */

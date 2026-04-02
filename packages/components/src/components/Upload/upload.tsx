@@ -1,10 +1,11 @@
 // Upload = Form + FormData + Ajax
 import type { ChangeEvent, FC } from "react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import axios from "axios";
 import UploadList from "./uploadList";
 import Dragger from "./dragger";
 import type { UploadFile, UploadProps } from "./upload.types";
+import useControlledState from "../../hooks/useControlledState";
 
 /**
  * 通过点击或者拖拽上传文件
@@ -18,6 +19,11 @@ export const Upload: FC<UploadProps> = (props) => {
   const {
     action,
     defaultFileList,
+    fileList: controlledFileList,
+    onFileListChange,
+    enableChunkUpload = false,
+    chunkSize,
+    chunkRetryCount = 0,
     beforeUpload,
     onProgress,
     onSuccess,
@@ -36,7 +42,11 @@ export const Upload: FC<UploadProps> = (props) => {
   // 文件输入框 ref 引用
   const fileInput = useRef<HTMLInputElement>(null);
   // （子组件）页面上 正在显示 的 上传文件列表
-  const [fileList, setFileList] = useState<UploadFile[]>(defaultFileList || []);
+  const [fileList, setFileList] = useControlledState<UploadFile[]>(
+    controlledFileList,
+    defaultFileList || [],
+    onFileListChange,
+  );
 
   //  **`UploadList`** 子组件: 从 上传文件列表fileList 渲染一堆 列表项 class
   // 上传列表状态更新器
@@ -139,6 +149,167 @@ export const Upload: FC<UploadProps> = (props) => {
     setFileList((prevList) => {
       return [_file, ...prevList];
     });
+
+    const shouldChunkUpload =
+      !!enableChunkUpload &&
+      typeof chunkSize === "number" &&
+      chunkSize > 0 &&
+      file.size > chunkSize;
+
+    if (shouldChunkUpload) {
+      const uploadChunked = async () => {
+        const totalChunks = Math.ceil(file.size / (chunkSize as number));
+        const uploadId = Date.now() + "uploadId-chunked";
+
+        // 标记为分片上传路径（不影响 UI 展示）
+        _file.chunked = true;
+        _file.uploadId = uploadId;
+        _file.totalChunks = totalChunks;
+
+        // 分片上传累计的已上传字节数（用于整体进度汇总）
+        let uploadedBytes = 0;
+        let maxOverallPercent = 0;
+        // 记录最后一次 chunk 请求返回值（用于最终 success 回调）
+        let lastChunkResp: unknown;
+
+        // 切分文件并按顺序上传每个 chunk
+        for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+          const chunkStart = chunkIndex * (chunkSize as number);
+          const chunkEnd = Math.min(file.size, chunkStart + (chunkSize as number));
+          const chunk = file.slice(chunkStart, chunkEnd);
+
+          const chunkUid = uploadId + "-" + chunkIndex;
+
+          const uploadChunk = async () => {
+            const formData = new FormData();
+            // 使用原有的 `name` 字段作为 chunk 内容载体
+            formData.append(name || "file", chunk);
+
+            // 携带分片元信息，供服务端识别归组与顺序
+            formData.append("chunkIndex", String(chunkIndex));
+            formData.append("totalChunks", String(totalChunks));
+            formData.append("uploadId", uploadId);
+            formData.append("chunkUid", chunkUid);
+
+            // 如果传了 `data`， 额外字段也 append 进 FormData
+            // （例如 `userId`、`token`）
+            if (data) {
+              Object.keys(data).forEach((key) => {
+                formData.append(key, data[key]);
+              });
+            }
+
+            return axios.post(action, formData, {
+              headers: {
+                ...headers,
+                "Content-Type": "multipart/form-data",
+              },
+              // 跨域请求 凭证信息（Cookie）
+              // 需要 后端 允许跨域携带凭证： Access-Control-Allow-Credentials: true
+              withCredentials,
+              // axios 提供的 请求配置回调（“系统回调”）
+              // （不需要手动调用）上传过程中，axios 内部自动不断触发 onUploadProgress
+              onUploadProgress: (e) => {
+                const overallUploaded = uploadedBytes + (e.loaded ?? 0);
+                const overallPercent = Math.round((overallUploaded * 100) / file.size);
+
+                // 防止整体进度回退
+                if (overallPercent > maxOverallPercent) {
+                  maxOverallPercent = overallPercent;
+                }
+
+                // 更新 fileList 中这条文件的 percent/status
+                if (maxOverallPercent < 100) {
+                  // 更新 React state（驱动UI）：让 UploadList 子组件重新渲染
+                  updateFileList(_file, { percent: maxOverallPercent, status: "uploading" });
+                  // 更新当前 _file 对象，保证传给回调的值是新的
+                  _file.status = "uploading";
+                  _file.percent = maxOverallPercent;
+                  // 将上传进度汇总后的结果，包装一层
+                  // 提供给 Upload 组件的外部使用者 外部钩子onProgress：给组件外部使用
+                  if (onProgress) {
+                    onProgress(maxOverallPercent, _file);
+                  }
+                }
+              },
+            });
+          };
+
+          // 设置整体为 uploading（确保第一块就能显示 spinner）
+          if (maxOverallPercent === 0) {
+            updateFileList(_file, { percent: 0, status: "uploading" });
+            _file.status = "uploading";
+            _file.percent = 0;
+            if (onProgress) {
+              onProgress(0, _file);
+            }
+          }
+
+          // 单 chunk 失败后的重试（不含首次尝试）
+          const maxRetries = chunkRetryCount ?? 0;
+          let lastChunkErr: unknown;
+
+          for (let attempt = 0; attempt <= maxRetries; attempt++) {
+            try {
+              lastChunkResp = await uploadChunk();
+              lastChunkErr = undefined;
+              break;
+            } catch (err) {
+              lastChunkErr = err;
+              if (attempt === maxRetries) {
+                break;
+              }
+            }
+          }
+
+          if (lastChunkErr) {
+            // 失败时：更新React UI内部状态
+            updateFileList(_file, { status: "error", error: lastChunkErr });
+            // 更新当前 _file 对象，保证传给回调的值是新的
+            _file.status = "error";
+            _file.error = lastChunkErr;
+            //
+            if (onError) {
+              onError(lastChunkErr, _file);
+            }
+            if (onChange) {
+              onChange(_file);
+            }
+            return;
+          }
+
+          // chunk 成功：累计已上传字节数，并继续下一个 chunk
+          uploadedBytes += chunk.size;
+          const nextPercent = Math.round((uploadedBytes * 100) / file.size);
+          if (nextPercent < 100) {
+            updateFileList(_file, { percent: nextPercent, status: "uploading" });
+            _file.status = "uploading";
+            _file.percent = nextPercent;
+            if (onProgress) {
+              onProgress(nextPercent, _file);
+            }
+          }
+        }
+
+        // 最后一个 chunk 成功后的响应作为整体成功结果
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const finalResp = lastChunkResp as any;
+        updateFileList(_file, { status: "success", response: finalResp.data });
+        // 更新当前 _file 对象，保证传给回调的值是新的
+        _file.status = "success";
+        _file.response = finalResp.data;
+        // 通知外部 onSuccess  / onChange 钩子
+        if (onSuccess) {
+          onSuccess(finalResp.data, _file);
+        }
+        if (onChange) {
+          onChange(_file);
+        }
+      };
+
+      void uploadChunked();
+      return;
+    }
 
     // 2) 构建 `FormData`
     const formData = new FormData();

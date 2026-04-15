@@ -1,3 +1,6 @@
+# 告诉 pnpm
+# packages 下面的包(component/utils)都算 workspace 成员
+# apps 下面的包也算 workspace 成员
 packages:
   - "packages/*"
   - "apps/*"

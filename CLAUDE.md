@@ -144,11 +144,12 @@ scope 取组件名小写或包名（`utils`, `components`, `docs`）。
 
 ## CI（GitHub Actions）
 
-| Workflow                 | 触发               | 任务                          |
-| ------------------------ | ------------------ | ----------------------------- |
-| `ci.yml`                 | push/PR → main     | `pnpm release` + `docs:build` |
-| `deploy-docs.yml`        | push → main / 手动 | Storybook → GitHub Pages      |
-| `publish-components.yml` | 手动/tag           | npm 发布                      |
+| Workflow                 | 触发               | 任务                                      |
+| ------------------------ | ------------------ | ----------------------------------------- |
+| `ci.yml` → `agent-check` | push/PR → main     | `turbo:typecheck`（快速，与 verify 并行） |
+| `ci.yml` → `verify`      | push/PR → main     | `pnpm release` + `docs:build`（全量）     |
+| `deploy-docs.yml`        | push → main / 手动 | Storybook → GitHub Pages                  |
+| `publish-components.yml` | 手动/tag           | npm 发布                                  |
 
 CI 中测试使用 `components:test:ci`（`CI=true jest`，无交互）。
 

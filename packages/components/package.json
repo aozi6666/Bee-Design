@@ -24,6 +24,10 @@
   },
   "homepage": "https://github.com/aozi6666/Bee-Design/tree/main/packages/components#readme",
   "type": "module",
+  "sideEffects": [
+    "**/*.css",
+    "**/*.scss"
+  ],
   "files": [
     "dist",
     "README.md"
